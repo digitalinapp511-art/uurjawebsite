@@ -241,7 +241,7 @@ const Register = () => {
         {/* RIGHT: IMAGE (HIDDEN ONLY ON MOBILE) */}
         <div className="hidden md:block md:w-1/2">
           <CloudinaryImage
-            publicId="logo/logo"
+            src="https://res.cloudinary.com/dqkssrvir/image/upload/v1772029046/logo_hg37lr.jpg"
             alt="UURJA Logo"
             width={600}
             height={800}

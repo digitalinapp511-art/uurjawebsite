@@ -45,7 +45,7 @@ const CategorySection = () => {
             >
               <div className="relative">
                 <CloudinaryImage
-                  publicId={cat.image}
+                  src={cat.image}
                   alt={cat.name}
                   width={400}
                   height={300}
