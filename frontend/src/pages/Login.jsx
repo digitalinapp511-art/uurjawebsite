@@ -234,7 +234,7 @@ const Login = () => {
 
         {/* RIGHT: IMAGE (HIDDEN ONLY ON MOBILE) */}
         <div className="hidden md:block md:w-1/2">
-          <CloudinaryImage
+          <img
             src="https://res.cloudinary.com/dqkssrvir/image/upload/v1772029046/logo_hg37lr.jpg"
             alt="UURJA Image"
             width={600}

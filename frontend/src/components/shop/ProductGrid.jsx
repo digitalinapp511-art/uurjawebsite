@@ -27,7 +27,7 @@ const ProductGrid = ({ products = [] }) => {
               to={`/product/${product.id}`}
               className="border rounded-lg p-4 hover:shadow-lg transition block"
             >
-              <CloudinaryImage
+              <img
                 src={product.image || "placeholder"}
                 alt={product.title || product.name}
                 width={300}

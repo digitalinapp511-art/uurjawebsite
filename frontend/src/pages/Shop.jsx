@@ -77,10 +77,8 @@ const Shop = () => {
       <ShopHeader />
 
       <div className="mb-2">
-        <CloudinaryImage
+        <img
           src="https://res.cloudinary.com/dqkssrvir/image/upload/v1772030852/flashSale1_p3auwa.png"
-          width={800}
-          height={400}
           onClick={() =>
             document
               .getElementById("price-section")

@@ -44,7 +44,7 @@ const CategorySection = () => {
               className="group rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition"
             >
               <div className="relative">
-                <CloudinaryImage
+                <img
                   src={cat.image}
                   alt={cat.name}
                   width={400}
