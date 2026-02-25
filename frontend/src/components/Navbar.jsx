@@ -41,7 +41,7 @@ const Navbar = () => {
         {/* LOGO */}
         <Link to="/" className="flex items-center ">
           <img
-            src={logo}
+            src="https://res.cloudinary.com/dqkssrvir/image/upload/v1772029046/logo_hg37lr.jpg"
             alt="Logo"
             className="h-16 w-auto object-contain rounded-full shadow-md"
           />

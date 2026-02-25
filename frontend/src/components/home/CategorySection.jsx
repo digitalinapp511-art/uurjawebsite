@@ -4,15 +4,15 @@ import CloudinaryImage from "../CloudinaryImage";
 const categories = [
   {
     name: "Bracelet",
-    image: "bracelete",
+    image: "https://res.cloudinary.com/dqkssrvir/image/upload/v1772028863/bracelete_lmepmc.png",
   },
   {
     name: "Ring",
-    image: "rings",
+    image: "https://res.cloudinary.com/dqkssrvir/image/upload/v1772028862/rings_o4k61y.jpg",
   },
   {
     name: "Selenite Plate",
-    image: "SelenitePlate",
+    image: "https://res.cloudinary.com/dqkssrvir/image/upload/v1772028863/SelenitePlate_ovvvld.jpg",
   },
   // {
   //   name: "Anarkali Sets",

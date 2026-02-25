@@ -57,9 +57,9 @@ const products = [
     category: "Bracelet",
     price: 1999,
     originalPrice: 2499,
-    image: "https://res.cloudinary.com/dqkssrvir/image/upload/v1772025157/bracelete5_pudumv.png.png",
+    image: "https://res.cloudinary.com/dqkssrvir/image/upload/v1772025157/bracelete5_pudumv.png",
     images: [
-      "https://res.cloudinary.com/dqkssrvir/image/upload/v1772025157/bracelete5_pudumv.png.png",
+      "https://res.cloudinary.com/dqkssrvir/image/upload/v1772025157/bracelete5_pudumv.png",
     ],
     description: "Classic Anarkali suit with graceful flare and comfort.",
     sizes: ["S", "M", "L", "XL"],
@@ -74,9 +74,9 @@ const products = [
     category: "Bracelet",
     price: 3499,
     originalPrice: 4999,
-    image: "https://res.cloudinary.com/dqkssrvir/image/upload/v1772025155/bracelete6_awqjal.png.png",
+    image: "https://res.cloudinary.com/dqkssrvir/image/upload/v1772025155/bracelete6_awqjal.png",
     images: [
-      "https://res.cloudinary.com/dqkssrvir/image/upload/v1772025155/bracelete6_awqjal.png.png",
+      "https://res.cloudinary.com/dqkssrvir/image/upload/v1772025155/bracelete6_awqjal.png",
     ],
     description: "Stylish printed palazzo suit set for casual and festive wear.",
     sizes: ["M", "L", "XL"],

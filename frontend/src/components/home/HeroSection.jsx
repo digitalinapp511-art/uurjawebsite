@@ -9,7 +9,7 @@ const HeroSection = () => {
 
                 <div className="w-full overflow-hidden rounded-2xl shadow-lg">
                     <CloudinaryImage
-                        publicId="logo/sliderImage"
+                        src="https://res.cloudinary.com/dqkssrvir/image/upload/v1772029048/sliderImage_x7mdix.png"
                         alt="Hero Slider"
                         width={1200}
                         height={600}
