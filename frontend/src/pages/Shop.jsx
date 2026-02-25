@@ -5,6 +5,7 @@ import ShopHeader from "../components/shop/ShopHeader";
 // import MobileFilter from "../components/shop/MobileFilter";
 import ProductGrid from "../components/shop/ProductGrid";
 import products from "../data/products";
+import CloudinaryImage from "../components/CloudinaryImage";
 
 const Shop = () => {
   const [searchParams] = useSearchParams();
@@ -76,8 +77,10 @@ const Shop = () => {
       <ShopHeader />
 
       <div className="mb-2">
-        <img
-          src="../flashSale1.png"
+        <CloudinaryImage
+          publicId="flashSale1"
+          width={800}
+          height={400}
           onClick={() =>
             document
               .getElementById("price-section")

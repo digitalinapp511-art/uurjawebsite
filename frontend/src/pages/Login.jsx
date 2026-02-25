@@ -5,7 +5,7 @@ import { FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
 import { auth, db } from "../firebase/firebase";
 import { sendOTP, verifyOTP, setupRecaptcha } from "../firebase/authService";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import logoImage from "../assets/logo/logo.jpeg";
+import CloudinaryImage from "../components/CloudinaryImage";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -234,9 +234,11 @@ const Login = () => {
 
         {/* RIGHT: IMAGE (HIDDEN ONLY ON MOBILE) */}
         <div className="hidden md:block md:w-1/2">
-          <img
-            src={logoImage}
+          <CloudinaryImage
+            publicId="logo/logo"
             alt="UURJA Image"
+            width={600}
+            height={800}
             className="h-full w-full object-cover"
           />
         </div>

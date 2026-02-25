@@ -1,17 +1,18 @@
 import { Link } from "react-router-dom";
+import CloudinaryImage from "../CloudinaryImage";
 
 const categories = [
   {
     name: "Bracelet",
-    image: "/bracelete.jpeg",
+    image: "bracelete",
   },
   {
     name: "Ring",
-    image: "/rings.jpg",
+    image: "rings",
   },
   {
     name: "Selenite Plate",
-    image: "/SelenitePlate.jpg",
+    image: "SelenitePlate",
   },
   // {
   //   name: "Anarkali Sets",
@@ -43,9 +44,11 @@ const CategorySection = () => {
               className="group rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition"
             >
               <div className="relative">
-                <img
-                  src={cat.image}
+                <CloudinaryImage
+                  publicId={cat.image}
                   alt={cat.name}
+                  width={400}
+                  height={300}
                   className="w-full h-auto object-fit group-hover:scale-105 transition"
                 />
                 <div className="absolute inset-0 bg-black/20 flex items-center justify-center">

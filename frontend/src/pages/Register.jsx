@@ -4,8 +4,7 @@ import { FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
 
 import { auth, db } from "../firebase/firebase";
 import { sendOTP, verifyOTP, setupRecaptcha } from "../firebase/authService";
-import { collection,doc, setDoc, query, where, getDocs } from "firebase/firestore";
-import logoImage from "../assets/logo/logo.jpeg";
+import { collection,doc, setDoc, query, where, getDocs } from "firebase/firestore";import CloudinaryImage from "../components/CloudinaryImage";
 
 
 const Register = () => {
@@ -241,9 +240,11 @@ const Register = () => {
 
         {/* RIGHT: IMAGE (HIDDEN ONLY ON MOBILE) */}
         <div className="hidden md:block md:w-1/2">
-          <img
-            src={logoImage}
+          <CloudinaryImage
+            publicId="logo/logo"
             alt="UURJA Logo"
+            width={600}
+            height={800}
             className="h-full w-full object-fit"
           />
         </div>

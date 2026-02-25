@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import CloudinaryImage from "../CloudinaryImage";
 
 const ProductGrid = ({ products = [] }) => {
   return (
@@ -26,9 +27,11 @@ const ProductGrid = ({ products = [] }) => {
               to={`/product/${product.id}`}
               className="border rounded-lg p-4 hover:shadow-lg transition block"
             >
-              <img
-                src={product.image || "/placeholder.png"}
+              <CloudinaryImage
+                publicId={product.image || "placeholder"}
                 alt={product.title || product.name}
+                width={300}
+                height={200}
                 className="w-full h-48 object-cover rounded"
               />
 

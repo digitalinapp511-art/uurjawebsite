@@ -2,6 +2,7 @@ import { useState } from "react";
 // import SizeSelector from "./SizeSelector";
 import { useCart } from "../../context/CartContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import CloudinaryImage from "../CloudinaryImage";
 
 import {
     FaTruck,
@@ -260,8 +261,10 @@ const ProductInfo = ({ product }) => {
 
             {/* OFFER BANNER */}
             {/* <div className="py-5">
-                <img
-                    src="../flashSale2.png"
+                <CloudinaryImage
+                    publicId="flashSale2"
+                    width={800}
+                    height={400}
                     onClick={() =>
                         document
                             .getElementById("price-section")
