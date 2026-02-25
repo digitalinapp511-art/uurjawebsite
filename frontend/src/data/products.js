@@ -91,9 +91,9 @@ const products = [
     category: "Bracelet",
     price: 1599,
     originalPrice: 1999,
-    image: "products/bracelete7.jpeg",
+    image: "bracelete6_awqjal",
     images: [
-      "products/bracelete7.jpeg",
+      "bracelete6_awqjal",
     ],
     description: "Trendy festive sharara set with elegant detailing.",
     sizes: ["S", "M", "L"],

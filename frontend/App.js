@@ -5,16 +5,36 @@ import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
 import { AdvancedImage } from '@cloudinary/react';
 
 const App = () => {
-  const cld = new Cloudinary({ cloud: { cloudName: 'dqkssrvir' } });
-  
-  // Use this sample image or upload your own via the Media Library
-  const img = cld
-        .image('cld-sample-5')
-        .format('auto') // Optimize delivery by resizing and applying auto-format and auto-quality
-        .quality('auto')
-        .resize(auto().gravity(autoGravity()).width(500).height(500)); // Transform the image: auto-crop to square aspect_ratio
 
-  return (<AdvancedImage cldImg={img}/>);
+  const cld = new Cloudinary({
+    cloud: { cloudName: 'dqkssrvir' }
+  });
+
+  const imageIds = [
+    "bracelete6_awqjal",
+    "bracelete9_x8gd2o",
+    "bracelete2_bfnbrh",
+    "bracelete8_l35rg8",
+    "bracelete1_kdxnja",
+    "bracelete3_dpcjmu",
+    "bracelete5_pudumv",
+    "bracelete7_go7dxq",
+    "bracelete10_uvjnha"
+  ];
+
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+      {imageIds.map((id, index) => {
+        const img = cld
+          .image(id)
+          .format('auto')
+          .quality('auto')
+          .resize(auto().gravity(autoGravity()).width(300).height(300));
+
+        return <AdvancedImage key={index} cldImg={img} />;
+      })}
+    </div>
+  );
 };
 
-export default App
+export default App;
