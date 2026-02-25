@@ -78,7 +78,7 @@ const Shop = () => {
 
       <div className="mb-2">
         <CloudinaryImage
-          publicId="flashSale1"
+          src="https://res.cloudinary.com/dqkssrvir/image/upload/v1772030852/flashSale1_p3auwa.png"
           width={800}
           height={400}
           onClick={() =>

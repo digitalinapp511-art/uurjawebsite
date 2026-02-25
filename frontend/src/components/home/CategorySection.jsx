@@ -49,7 +49,7 @@ const CategorySection = () => {
                   alt={cat.name}
                   width={400}
                   height={300}
-                  className="w-full h-auto object-fit group-hover:scale-105 transition"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition"
                 />
                 <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                   <h3 className="text-white text-4xl font-heading font-semibold">
