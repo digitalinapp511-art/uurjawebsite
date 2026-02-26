@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
 import { FiEdit2, FiTrash2, FiFilter, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import productsData from "../data/products";
 
 const AdminAllProducts = () => {
     const [products, setProducts] = useState([]);
@@ -30,51 +29,32 @@ const AdminAllProducts = () => {
         }
     }, [selectedCategory, products]);
 
-    const fetchProducts = async () => {
+    const fetchProducts = () => {
         try {
             setLoading(true);
-            const productsRef = collection(db, "products");
-            const querySnapshot = await getDocs(productsRef);
-
-            const productsData = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
 
             setProducts(productsData);
             setFilteredProducts(productsData);
 
-            // Extract unique categories
             const uniqueCategories = [
                 ...new Set(productsData.map((product) => product.category)),
             ].filter(Boolean);
-            setCategories(uniqueCategories);
 
+            setCategories(uniqueCategories);
             setLoading(false);
         } catch (err) {
-            console.error("Error fetching products:", err);
+            console.error("Error loading products:", err);
             setError("Failed to load products");
             setLoading(false);
         }
     };
 
-    const handleDelete = async (productId) => {
+    const handleDelete = (productId) => {
         if (!window.confirm("Are you sure you want to delete this product?")) {
             return;
         }
 
-        try {
-            setDeleteLoading(productId);
-            await deleteDoc(doc(db, "products", productId));
-
-            // Update local state
-            setProducts(products.filter((p) => p.id !== productId));
-            setDeleteLoading(null);
-        } catch (err) {
-            console.error("Error deleting product:", err);
-            alert("Failed to delete product");
-            setDeleteLoading(null);
-        }
+        setProducts((prev) => prev.filter((p) => p.id !== productId));
     };
 
     const handleEdit = (productId) => {
@@ -117,9 +97,9 @@ const AdminAllProducts = () => {
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-[#ff9d00] mb-2">
+                    {/* <h1 className="text-3xl font-bold text-[#ff9d00] mb-2">
                         All Products
-                    </h1>
+                    </h1> */}
                     <p className="text-gray-600">
                         Manage your product inventory ({filteredProducts.length} products)
                     </p>
@@ -137,8 +117,8 @@ const AdminAllProducts = () => {
                             <button
                                 onClick={() => setSelectedCategory("all")}
                                 className={`px-4 py-2 rounded-lg font-medium transition ${selectedCategory === "all"
-                                        ? "bg-[#ff9d00] text-white"
-                                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                    ? "bg-[#ff9d00] text-white"
+                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                     }`}
                             >
                                 All Categories
@@ -149,8 +129,8 @@ const AdminAllProducts = () => {
                                     key={category}
                                     onClick={() => setSelectedCategory(category)}
                                     className={`px-4 py-2 rounded-lg font-medium transition ${selectedCategory === category
-                                            ? "bg-[#8b1c62] text-white"
-                                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                        ? "bg-[#ff9d00] text-white"
+                                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                         }`}
                                 >
                                     {category}

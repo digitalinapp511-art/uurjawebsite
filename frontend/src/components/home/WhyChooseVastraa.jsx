@@ -10,7 +10,7 @@ const iconMap = {
 const whyChooseData = [
     {
         title: "Premium Fabric",
-        description: "Carefully sourced high-quality fabrics for lasting comfort and elegance.",
+        description: "Carefully sourced high-quality stones for lasting comfort and elegance.",
         icon: "fabric",
     },
     {

@@ -5,7 +5,6 @@ import ShopHeader from "../components/shop/ShopHeader";
 // import MobileFilter from "../components/shop/MobileFilter";
 import ProductGrid from "../components/shop/ProductGrid";
 import products from "../data/products";
-import CloudinaryImage from "../components/CloudinaryImage";
 
 const Shop = () => {
   const [searchParams] = useSearchParams();

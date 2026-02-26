@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import CloudinaryImage from "../CloudinaryImage";
 
 const ProductGrid = ({ products = [] }) => {
   return (

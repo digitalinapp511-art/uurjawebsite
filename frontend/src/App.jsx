@@ -16,7 +16,10 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import MyOrders from "./pages/MyOrders";
+import AdminProtectedRoute from "./admin/AdminProtectedRoute";
+import AdminLogin from "./admin/AdminLogin";
 import AdminDashboard from "./admin/AdminDashboard";
+
 
 
 
@@ -27,6 +30,7 @@ function AppContent({ showSplash }) {
   const hideLayout =
     location.pathname === "/login" ||
     location.pathname === "/register" ||
+    location.pathname.startsWith("/admin") ||
     showSplash;
 
   return (
@@ -47,7 +51,15 @@ function AppContent({ showSplash }) {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/my-orders" element={<MyOrders />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboard />
+            </AdminProtectedRoute>
+          }
+        />
       </Routes>
 
       {!hideLayout && <Footer />}
@@ -95,6 +107,7 @@ function AppWrapper({ showSplash }) {
   const hidePadding =
     location.pathname === "/login" ||
     location.pathname === "/register" ||
+    location.pathname.startsWith("/admin") ||
     showSplash;
 
   return (

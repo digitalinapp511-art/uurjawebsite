@@ -4,13 +4,13 @@ const testimonialsData = [
         name: "Ananya Sharma",
         location: "Jaipur",
         rating: 5,
-        review:"Absolutely loved the fabric quality and elegant design. VASTRAA truly represents ethnic luxury.",
+        review:"Absolutely loved the stone quality and elegant design. UURJA truly represents ethnic luxury.",
     },
     {
         name: "Priya Mehta",
         location: "Mumbai",
         rating: 4,
-        review:"Beautiful collection and timely delivery. The festive wear looks exactly like the pictures.",
+        review:"Beautiful collection and timely delivery. The craftsmanship is commendable. Will shop again!",
     },
     {
         name: "Ritika Verma",

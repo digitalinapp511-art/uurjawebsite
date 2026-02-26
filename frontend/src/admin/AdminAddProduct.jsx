@@ -81,11 +81,8 @@ const AdminAddProduct = () => {
     };
 
     return (
-        <div className="w-full flex justify-center mb-20">
-            <div className="bg-white rounded-xl shadow-lg p-8 md:w-[70%]">
-                <h2 className="text-3xl font-bold mb-6 text-center text-[#ff9d00]">
-                    Add New Product
-                </h2>
+        <div className="w-full flex justify-center items-center py-10">
+            <div className="bg-white rounded-xl shadow-lg p-8 md:w-[90%]">
 
                 {/* FORM GRID */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -99,8 +96,8 @@ const AdminAddProduct = () => {
                             value={product.title}
                             onChange={handleChange}
                             className="w-full mt-1 p-3 border rounded-lg"
-                            placeholder="Women Ethnic Kurti"
-                            
+                            placeholder="Lava Stone Bracelet"
+
                         />
                     </div>
 
@@ -114,7 +111,7 @@ const AdminAddProduct = () => {
                             value={product.category}
                             onChange={handleChange}
                             className="w-full mt-1 p-3 border rounded-lg"
-                            placeholder="Kurti, Lehenga, Saree"
+                            placeholder="Bracelete, Ring, Selenite-plate"
                         />
                     </div>
 
@@ -133,7 +130,7 @@ const AdminAddProduct = () => {
                     </div>
 
                     {/* SIZES */}
-                    <div>
+                    {/* <div>
                         <label className="font-medium text-sm">
                             Available Sizes
                         </label>
@@ -144,7 +141,7 @@ const AdminAddProduct = () => {
                             className="w-full mt-1 p-3 border rounded-lg"
                             placeholder="S,M,L,XL"
                         />
-                    </div>
+                    </div> */}
 
                     {/* PRICE */}
                     <div>
@@ -162,7 +159,7 @@ const AdminAddProduct = () => {
                     </div>
 
                     {/* SALE PRICE */}
-                    <div>
+                    {/* <div>
                         <label className="font-medium text-sm">
                             Sale Price *
                         </label>
@@ -174,7 +171,7 @@ const AdminAddProduct = () => {
                             className="w-full mt-1 p-3 border rounded-lg"
                             placeholder="1499"
                         />
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* DESCRIPTION */}
@@ -188,7 +185,7 @@ const AdminAddProduct = () => {
                         onChange={handleChange}
                         rows="4"
                         className="w-full mt-1 p-3 border rounded-lg"
-                        placeholder="Fabric, style, wash care..."
+                        placeholder="Material, stone type, size, finish, care instructions..."
                     />
                 </div>
 
@@ -223,7 +220,7 @@ const AdminAddProduct = () => {
                 {/* SUBMIT */}
                 <button
                     onClick={handleAddProduct}
-                    className="mt-8 bg-[#ff9d00] hover:bg-[#6d1550] text-white px-8 py-3 rounded-lg font-semibold"
+                    className="mt-8 bg-[#ff9d00] hover:bg-[#e68c00] text-white px-8 py-3 rounded-lg font-semibold"
                 >
                     Add Product
                 </button>

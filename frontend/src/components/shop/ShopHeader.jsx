@@ -7,7 +7,7 @@ const ShopHeader = () => {
         </h1>
 
         <p className="text-gray-500 mt-1 font-body">
-          Elevate your style with the classic charm of ethnic wear for women.
+         Elevate your energy with handcrafted healing jewelry and sacred crystal pieces.
         </p>
       </div>
     </div>

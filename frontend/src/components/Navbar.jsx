@@ -129,7 +129,7 @@ const Navbar = () => {
 
       {/* MOBILE MENU */}
       {open && (
-        <div className="fixed top-0 right-0 h-screen w-2/4 bg-[#8b1c62] z-50 p-6 md:hidden shadow-lg">
+        <div className="fixed top-0 right-0 h-screen w-2/4 bg-[#ff9d00] z-50 p-6 md:hidden shadow-lg">
           <button
             className="absolute top-4 right-4"
             onClick={() => setOpen(false)}
@@ -144,16 +144,17 @@ const Navbar = () => {
 
             {user ? (
               <>
-                <span className="font-semibold">{user.name}</span>
+
                 <Link to="/my-orders" onClick={() => setOpen(false)}>
                   My Orders
                 </Link>
+                <span className="font-semibold">{user.name}</span>
                 <button
                   onClick={() => {
                     handleLogout();
                     setOpen(false);
                   }}
-                  className="text-left text-red-300"
+                  className="text-left text-gray-900"
                 >
                   Logout
                 </button>
