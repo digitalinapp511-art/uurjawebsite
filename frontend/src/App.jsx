@@ -53,7 +53,7 @@ function AppContent({ showSplash }) {
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
-          path="/admin/dashboard"
+          path="/admin/dashboard/:tab?"
           element={
             <AdminProtectedRoute>
               <AdminDashboard />

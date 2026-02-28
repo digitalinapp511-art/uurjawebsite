@@ -106,26 +106,30 @@ const AdminAddProduct = () => {
                         <label className="font-medium text-sm">
                             Category *
                         </label>
-                        <input
+                        <select
                             name="category"
                             value={product.category}
                             onChange={handleChange}
-                            className="w-full mt-1 p-3 border rounded-lg"
-                            placeholder="Bracelete, Ring, Selenite-plate"
-                        />
+                            className="w-full mt-1 p-3 border rounded-lg bg-white"
+                        >
+                            <option value="">-- Select Category --</option>
+                            <option value="Bracelet">Bracelet</option>
+                            <option value="Ring">Ring</option>
+                            <option value="Selenite-plate">Selenite Plate</option>
+                        </select>
                     </div>
 
                     {/* COLOR */}
                     <div>
                         <label className="font-medium text-sm">
-                            Color
+                            Quantity
                         </label>
                         <input
-                            name="color"
-                            value={product.color}
+                            name="quantity"
+                            value={product.quantity}
                             onChange={handleChange}
                             className="w-full mt-1 p-3 border rounded-lg"
-                            placeholder="Red, Blue"
+                            placeholder="10, 20, 50"
                         />
                     </div>
 
@@ -146,7 +150,7 @@ const AdminAddProduct = () => {
                     {/* PRICE */}
                     <div>
                         <label className="font-medium text-sm">
-                            Original Price *
+                            Price *
                         </label>
                         <input
                             type="number"
@@ -154,7 +158,7 @@ const AdminAddProduct = () => {
                             value={product.price}
                             onChange={handleChange}
                             className="w-full mt-1 p-3 border rounded-lg"
-                            placeholder="1999"
+                            placeholder="per piece"
                         />
                     </div>
 

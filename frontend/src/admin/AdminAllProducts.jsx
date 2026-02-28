@@ -11,6 +11,8 @@ const AdminAllProducts = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [deleteLoading, setDeleteLoading] = useState(null);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [currentProduct, setCurrentProduct] = useState(null);
     const navigate = useNavigate();
 
     // Fetch all products
@@ -58,7 +60,19 @@ const AdminAllProducts = () => {
     };
 
     const handleEdit = (productId) => {
-        navigate(`/admin/edit-product/${productId}`);
+        const productToEdit = products.find((p) => p.id === productId);
+        setCurrentProduct(productToEdit);
+        setIsEditOpen(true);
+    };
+
+    const handleUpdate = () => {
+        setProducts((prev) =>
+            prev.map((p) =>
+                p.id === currentProduct.id ? currentProduct : p
+            )
+        );
+
+        setIsEditOpen(false);
     };
 
     const clearFilter = () => {
@@ -227,6 +241,112 @@ const AdminAllProducts = () => {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                )}
+
+                {/* Edit modal */}
+                {isEditOpen && currentProduct && (
+                    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                        <div className="bg-white w-full max-w-lg rounded-xl p-6 shadow-xl md:h-[80vh] overflow-y-auto">
+                            <h2 className="text-xl font-bold mb-4">Edit Product</h2>
+                            <div>
+                                {currentProduct.images && currentProduct.images[0] && (
+                                    <img
+                                        src={currentProduct.images[0]}
+                                        alt="Preview"
+                                        className="mt-3 w-32 h-32 object-cover rounded-lg border"
+                                    />
+                                )}
+                                <label className="block text-sm font-medium mb-2">
+                                    Product Image
+                                </label>
+
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                            const previewUrl = URL.createObjectURL(file);
+
+                                            setCurrentProduct({
+                                                ...currentProduct,
+                                                images: [previewUrl], // replacing first image
+                                            });
+                                        }
+                                    }}
+                                    className="w-full border p-2 rounded"
+                                />
+                            </div>
+
+                            <div className="space-y-4">
+                                <input
+                                    type="text"
+                                    value={currentProduct.name}
+                                    onChange={(e) =>
+                                        setCurrentProduct({
+                                            ...currentProduct,
+                                            name: e.target.value,
+                                        })
+                                    }
+                                    className="w-full border p-2 rounded"
+                                    placeholder="Product Name"
+                                />
+
+                                <input
+                                    type="number"
+                                    value={currentProduct.price}
+                                    onChange={(e) =>
+                                        setCurrentProduct({
+                                            ...currentProduct,
+                                            price: e.target.value,
+                                        })
+                                    }
+                                    className="w-full border p-2 rounded"
+                                    placeholder="Price"
+                                />
+
+                                <input
+                                    type="number"
+                                    value={currentProduct.stock}
+                                    onChange={(e) =>
+                                        setCurrentProduct({
+                                            ...currentProduct,
+                                            stock: e.target.value,
+                                        })
+                                    }
+                                    className="w-full border p-2 rounded"
+                                    placeholder="Stock"
+                                />
+
+                                <textarea
+                                    value={currentProduct.description}
+                                    onChange={(e) =>
+                                        setCurrentProduct({
+                                            ...currentProduct,
+                                            description: e.target.value,
+                                        })
+                                    }
+                                    className="w-full border p-2 rounded"
+                                    placeholder="Description"
+                                />
+                            </div>
+
+                            <div className="flex justify-end gap-3 mt-6">
+                                <button
+                                    onClick={() => setIsEditOpen(false)}
+                                    className="px-4 py-2 bg-gray-200 rounded-lg"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleUpdate}
+                                    className="px-4 py-2 bg-[#ff9d00] text-white rounded-lg"
+                                >
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

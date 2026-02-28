@@ -15,7 +15,7 @@ const AdminLogin = () => {
 
         if (password === ADMIN_KEY) {
             localStorage.setItem("adminAuth", "true");
-            localStorage.setItem("adminLoginTime", Date.now()); // unified key
+            localStorage.setItem("adminLoginTime", Date.now()); 
             navigate("/admin/dashboard");
         } else {
             setError("Invalid Admin Key");

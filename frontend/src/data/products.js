@@ -14,7 +14,7 @@ const products = [
     sizes: ["XS", "S", "M", "L", "XL"],
     color: "yellow",
     featured: true,
-    stock: true,
+    stock: 10,
   },
   {
     id: 2,
@@ -31,7 +31,7 @@ const products = [
     sizes: ["Free Size"],
     color: "yellow",
     featured: true,
-    stock: true,
+    stock: 10,
   },
   {
     id: 3,
@@ -48,7 +48,7 @@ const products = [
     sizes: ["S", "M", "L"],
     color: "red",
     featured: true,
-    stock: true,
+    stock: 15,
   },
   {
     id: 4,
@@ -65,7 +65,7 @@ const products = [
     sizes: ["S", "M", "L", "XL"],
     color: "white",
     featured: true,
-    stock: true,
+    stock: 20,
   },
   {
     id: 5,
@@ -82,7 +82,7 @@ const products = [
     sizes: ["M", "L", "XL"],
     color: "blue",
     featured: true,
-    stock: true,
+    stock: 15,
   },
   {
     id: 6,
@@ -99,7 +99,7 @@ const products = [
     sizes: ["S", "M", "L"],
     color: "pink",
     featured: true,
-    stock: true,
+    stock: 15,
   },
   {
     id: 7,
@@ -116,7 +116,7 @@ const products = [
     sizes: ["M", "L", "XL"],
     color: "blue",
     featured: true,
-    stock: true,
+    stock: 30,
   },
   {
     id: 8,
@@ -133,7 +133,7 @@ const products = [
     sizes: ["Free Size"],
     color: "green",
     featured: true,
-    stock: true,
+    stock: 50,
   },
   {
     id: 9,
@@ -150,7 +150,7 @@ const products = [
     sizes: ["Free Size"],
     color: "green",
     featured: true,
-    stock: true,
+    stock: 20,
   },
 ];
 
