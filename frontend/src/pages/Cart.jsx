@@ -7,7 +7,7 @@ const Cart = () => {
 
     // ✅ calculate total here
     const total = cartItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
+        (sum, item) => sum + item.salePrice * item.quantity,
         0
     );
 
@@ -56,7 +56,7 @@ const Cart = () => {
                                     {item.name} × {item.quantity}
                                 </span>
                                 <span className="font-medium">
-                                    ₹{item.price * item.quantity}
+                                    ₹{item.salePrice * item.quantity}
                                 </span>
                             </div>
                         ))}

@@ -3,7 +3,7 @@ import { notyf } from "../utils/notyf";
 
 const AdminAddProduct = () => {
     const [product, setProduct] = useState({
-        title: "",
+        name: "",
         description: "",
         sizes: "",
         price: "",
@@ -32,10 +32,13 @@ const AdminAddProduct = () => {
 
     const handleAddProduct = () => {
         if (
-            !product.title ||
-            !product.price ||
+            !product.name ||
+            !product.originalPrice ||
             !product.salePrice ||
-            !product.category
+            !product.category ||
+            !product.description||
+            !product.stock ||
+            !product.images
         ) {
             notyf.error("Please fill all fields")
             // alert("Please fill all required fields");
@@ -47,12 +50,11 @@ const AdminAddProduct = () => {
 
         const newProduct = {
             id: Date.now(),
-            title: product.title,
+            name: product.name,
             description: product.description,
-            sizes: product.sizes.split(","),
-            price: product.price,
+            originalPrice: product.originalPrice,
             salePrice: product.salePrice,
-            color: product.color,
+            stock: product.stock,
             category: product.category,
             images: imagePreviews, // TEMP (later backend URLs)
             status: "ACTIVE",
@@ -68,12 +70,11 @@ const AdminAddProduct = () => {
 
         // reset
         setProduct({
-            title: "",
+            name: "",
             description: "",
-            sizes: "",
-            price: "",
+            originalPrice: "",
             salePrice: "",
-            color: "",
+            stock: "",
             category: "",
             images: [],
         });
@@ -82,18 +83,18 @@ const AdminAddProduct = () => {
 
     return (
         <div className="w-full flex justify-center items-center py-10">
-            <div className="bg-white rounded-xl shadow-lg p-8 md:w-[90%]">
+            <div className="bg-gray-50 rounded-xl shadow-lg p-8 sm:w-[90%] md:w-[90%]">
 
                 {/* FORM GRID */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* TITLE */}
+                    {/* NAME */}
                     <div>
-                        <label className="font-medium text-sm">
-                            Product Title *
+                        <label className="font-medium text-md">
+                            Product Name *
                         </label>
                         <input
-                            name="title"
-                            value={product.title}
+                            name="name"
+                            value={product.name}
                             onChange={handleChange}
                             className="w-full mt-1 p-3 border rounded-lg"
                             placeholder="Lava Stone Bracelet"
@@ -103,7 +104,7 @@ const AdminAddProduct = () => {
 
                     {/* CATEGORY */}
                     <div>
-                        <label className="font-medium text-sm">
+                        <label className="font-medium text-md">
                             Category *
                         </label>
                         <select
@@ -121,12 +122,12 @@ const AdminAddProduct = () => {
 
                     {/* COLOR */}
                     <div>
-                        <label className="font-medium text-sm">
-                            Quantity
+                        <label className="font-medium text-md">
+                            Stock
                         </label>
                         <input
-                            name="quantity"
-                            value={product.quantity}
+                            name="stock"
+                            value={product.stock}
                             onChange={handleChange}
                             className="w-full mt-1 p-3 border rounded-lg"
                             placeholder="10, 20, 50"
@@ -149,22 +150,22 @@ const AdminAddProduct = () => {
 
                     {/* PRICE */}
                     <div>
-                        <label className="font-medium text-sm">
-                            Price *
+                        <label className="font-medium text-md">
+                            Original Price *
                         </label>
                         <input
                             type="number"
-                            name="price"
-                            value={product.price}
+                            name="originalPrice"
+                            value={product.originalPrice}
                             onChange={handleChange}
                             className="w-full mt-1 p-3 border rounded-lg"
-                            placeholder="per piece"
+                            placeholder="per piece e.g.999"
                         />
                     </div>
 
                     {/* SALE PRICE */}
-                    {/* <div>
-                        <label className="font-medium text-sm">
+                    <div>
+                        <label className="font-medium text-md">
                             Sale Price *
                         </label>
                         <input
@@ -173,14 +174,14 @@ const AdminAddProduct = () => {
                             value={product.salePrice}
                             onChange={handleChange}
                             className="w-full mt-1 p-3 border rounded-lg"
-                            placeholder="1499"
+                            placeholder="per piece. e.g.499"
                         />
-                    </div> */}
+                    </div>
                 </div>
 
                 {/* DESCRIPTION */}
                 <div className="mt-6">
-                    <label className="font-medium text-sm">
+                    <label className="font-medium text-md">
                         Product Description
                     </label>
                     <textarea
@@ -195,7 +196,7 @@ const AdminAddProduct = () => {
 
                 {/* IMAGE UPLOAD */}
                 <div className="mt-6">
-                    <label className="font-medium text-sm">
+                    <label className="font-medium text-md">
                         Product Images *
                     </label>
                     <input

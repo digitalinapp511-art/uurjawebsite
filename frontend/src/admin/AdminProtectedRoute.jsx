@@ -5,7 +5,7 @@ const AdminProtectedRoute = ({ children }) => {
     const loginTime = localStorage.getItem("adminLoginTime");
 
     const isExpired =
-        !loginTime || Date.now() - Number(loginTime) > 30 * 60 * 1000; // 30 min
+        !loginTime || Date.now() - Number(loginTime) > 60 * 60 * 1000; // 30 min
 
     if (!isAuthenticated || isExpired) {
         localStorage.removeItem("adminAuth");

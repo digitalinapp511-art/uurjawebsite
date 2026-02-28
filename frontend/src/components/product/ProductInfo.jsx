@@ -2,8 +2,6 @@ import { useState } from "react";
 // import SizeSelector from "./SizeSelector";
 import { useCart } from "../../context/CartContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import CloudinaryImage from "../CloudinaryImage";
-
 import {
     FaTruck,
     FaGlobeAsia,
@@ -24,7 +22,7 @@ const ProductInfo = ({ product }) => {
 
     const discount = product.originalPrice && Math.round
         (
-            ((product.originalPrice - product.price) / product.originalPrice) * 100
+            ((product.originalPrice - product.salePrice) / product.originalPrice) * 100
         );
 
     const handleCopy = () => {
@@ -48,7 +46,7 @@ const ProductInfo = ({ product }) => {
         const cartItem = {
             id: product.id,
             name: product.name,
-            price: product.price,
+            salePrice: product.salePrice,
             image: product.images?.[0],
             size: finalSize,
             quantity: 1,
@@ -58,29 +56,6 @@ const ProductInfo = ({ product }) => {
         // NEXT STEP: send this to Cart Context / backend
     };
 
-    // const handleBuyNow = () => {
-    //     // const finalSize = selectedSize || product.sizes?.[0];
-    //     if (!selectedSize) {
-    //         alert("Please select the size.");
-    //     }
-
-    //     const buyNowItem = {
-    //         productId: product.id,
-    //         name: product.name,
-    //         price: product.price,
-    //         originalPrice: product.originalPrice,
-    //         image: product.images?.[0],
-    //         size: selectedSize,
-    //         quantity: 1,
-    //     };
-
-    //     localStorage.setItem(
-    //         "buyNowItem",
-    //         JSON.stringify([buyNowItem])
-    //     );
-
-    //     navigate("/checkout?type=buynow");
-    // };
 
     const handleBuyNow = () => {
         const user = localStorage.getItem("user");
@@ -97,9 +72,9 @@ const ProductInfo = ({ product }) => {
         const buyNowItem = {
             productId: product.id,
             name: product.name,
-            price: product.price,
+            salePrice: product.salePrice,
             originalPrice: product.originalPrice,
-            image: product.images?.[0],
+            image: product.image,
             size: product.sizes?.[0] || null,
             quantity: 1,
         };
@@ -129,7 +104,7 @@ const ProductInfo = ({ product }) => {
             <div className="mb-4" id="price-section">
                 <div className="flex items-center gap-4 mb-2">
                     <span className="text-2xl font-semibold text-[#ff9d00]">
-                        ₹ {product.price.toLocaleString("en-IN")}
+                        ₹ {product.salePrice.toLocaleString("en-IN")}
                     </span>
 
                     {product.originalPrice && (
@@ -149,7 +124,7 @@ const ProductInfo = ({ product }) => {
                     <div className="text-lg mt-3">
                         <p className="text-[#007900] font-medium">
                             Save ₹{" "}
-                            {(product.originalPrice - product.price).toLocaleString("en-IN")}
+                            {(product.originalPrice - product.salePrice).toLocaleString("en-IN")}
                         </p>
                         <p className="text-gray-500 text-sm tracking-wide">
                             Inclusive of all taxes

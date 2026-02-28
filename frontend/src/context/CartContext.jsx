@@ -17,7 +17,6 @@ export const CartProvider = ({ children }) => {
     // ✅ ADD TO CART
     const addToCart = (product, size, quantity = 1) => {
         const finalSize = size || product.sizes?.[0];
-
         setCartItems((prev) => {
             const existingItem = prev.find(
                 (item) =>
@@ -39,10 +38,9 @@ export const CartProvider = ({ children }) => {
                 {
                     productId: product.id,
                     name: product.name,
-                    price: product.price,
+                    salePrice: product.salePrice,
                     originalPrice: product.originalPrice,
-                    image: product.images?.[0],
-                    size: finalSize,
+                    image: product.image,
                     quantity,
                     availableSizes: product.sizes,
                 },
@@ -61,12 +59,12 @@ export const CartProvider = ({ children }) => {
     };
 
     // ✅ UPDATE QUANTITY
-    const updateQuantity = (productId, size, quantity) => {
+    const updateQuantity = (productId, quantity) => {
         if (quantity < 1) return;
 
         setCartItems((prev) =>
             prev.map((item) =>
-                item.productId === productId && item.size === size
+                item.productId === productId
                     ? { ...item, quantity }
                     : item
             )

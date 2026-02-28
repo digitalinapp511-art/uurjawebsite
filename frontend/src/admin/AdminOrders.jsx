@@ -250,7 +250,7 @@ const AdminOrders = () => {
                     </div>
                   </div>
                   <p className="text-sm font-semibold">
-                    ₹{item.price * item.quantity}
+                    ₹{item.salePrice * item.quantity}
                   </p>
                 </div>
               ))}

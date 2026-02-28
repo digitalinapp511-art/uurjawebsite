@@ -3,27 +3,29 @@ import { FaTrash } from "react-icons/fa";
 import { notyf } from "../utils/notyf";
 
 const CartItem = ({ item }) => {
-    const { updateQuantity, removeFromCart, updateSize } = useCart();
+    const { updateQuantity, removeFromCart} = useCart();
+    console.log("Cart Item =>", JSON.stringify(item));
 
     const discount =
         item.originalPrice &&
         Math.round(
-            ((item.originalPrice - item.price) / item.originalPrice) * 100
+            ((item.originalPrice - item.salePrice) / item.originalPrice) * 100
         );
 
     const savedAmount =
         item.originalPrice
-            ? (item.originalPrice - item.price) * item.quantity
+            ? (item.originalPrice - item.salePrice) * item.quantity
             : 0;
 
     const increaseQty = () => {
-        updateQuantity(item.productId, item.size, item.quantity + 1);
+        updateQuantity(item.productId, item.quantity + 1);
         notyf.success("Item quantity increased");
     };
 
     const decreaseQty = () => {
         if (item.quantity > 1) {
-            updateQuantity(item.productId, item.size, item.quantity - 1);
+            updateQuantity(item.productId, item.quantity - 1);
+            notyf.warning("Item quantity decreased");
         }
     };
 
@@ -91,7 +93,7 @@ const CartItem = ({ item }) => {
 
                     <div className="flex items-center justify-end gap-2">
                         <span className="font-bold text-lg">
-                            ₹{item.price * item.quantity}
+                            ₹{item.salePrice * item.quantity}
                         </span>
 
                         {item.originalPrice && (

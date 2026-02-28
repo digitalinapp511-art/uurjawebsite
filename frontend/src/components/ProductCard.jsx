@@ -10,7 +10,7 @@ const ProductCard = ({ product }) => {
     const discount =
         product.originalPrice &&
         Math.round(
-            ((product.originalPrice - product.price) /
+            ((product.originalPrice - product.salePrice) /
                 product.originalPrice) *
             100
         );
@@ -38,7 +38,7 @@ const ProductCard = ({ product }) => {
                     {/* PRICE */}
                     <div className="flex justify-center gap-2 items-center mb-2">
                         <span className="text-[#000000] font-semibold">
-                            ₹ {product.price.toLocaleString("en-IN")}
+                            ₹ {product.salePrice.toLocaleString("en-IN")}
                         </span>
 
                         {product.originalPrice && (

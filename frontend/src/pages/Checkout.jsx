@@ -19,7 +19,7 @@ const Checkout = () => {
         type === "buynow" && buyNowItem ? [buyNowItem] : cartItems;
 
     const totalAmount = checkoutItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
+        (sum, item) => sum + item.salePrice * item.quantity,
         0
     );
 
@@ -286,7 +286,7 @@ const Checkout = () => {
                         {checkoutItems.map((item) => (
                             <div key={item.productId + item.size} className="flex justify-between text-sm">
                                 <span>{item.name} × {item.quantity}</span>
-                                <span>₹{item.price * item.quantity}</span>
+                                <span>₹{item.salePrice * item.quantity}</span>
                             </div>
                         ))}
                     </div>

@@ -10,11 +10,11 @@ const ProductGrid = ({ products = [] }) => {
       ) : (
         products.map((product, i) => {
           const hasDiscount =
-            product.originalPrice && product.originalPrice > product.price;
+            product.originalPrice && product.originalPrice > product.salePrice;
 
           const discount = hasDiscount
             ? Math.round(
-                ((product.originalPrice - product.price) /
+                ((product.originalPrice - product.salePrice) /
                   product.originalPrice) *
                   100
               )
@@ -40,7 +40,7 @@ const ProductGrid = ({ products = [] }) => {
 
               <div className="flex items-center gap-2 mt-1">
                 <p className="text-[#d4af37] font-bold">
-                  ₹{product.price}
+                  ₹{product.salePrice}
                 </p>
 
                 {hasDiscount && (

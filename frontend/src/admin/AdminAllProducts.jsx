@@ -111,45 +111,33 @@ const AdminAllProducts = () => {
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    {/* <h1 className="text-3xl font-bold text-[#ff9d00] mb-2">
-                        All Products
-                    </h1> */}
                     <p className="text-gray-600">
                         Manage your product inventory ({filteredProducts.length} products)
                     </p>
                 </div>
 
                 {/* Filter Section */}
-                <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div className="flex items-center gap-2">
+                <div className="bg-white rounded-lg shadow-sm p-2 md:p-4 mb-6">
+                    <div className="flex items-center justify-between flex-wrap gap-2 md:gap-4">
+                        <div className="flex items-center gap-1">
                             <FiFilter className="text-gray-500" />
                             <span className="font-medium text-gray-700">Filter by Category:</span>
                         </div>
 
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <button
-                                onClick={() => setSelectedCategory("all")}
-                                className={`px-4 py-2 rounded-lg font-medium transition ${selectedCategory === "all"
-                                    ? "bg-[#ff9d00] text-white"
-                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                    }`}
+                        <div className="flex items-center gap-2">
+                            <select
+                                value={selectedCategory}
+                                onChange={(e) => setSelectedCategory(e.target.value)}
+                                className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#ff9d00]"
                             >
-                                All Categories
-                            </button>
-
-                            {categories.map((category) => (
-                                <button
-                                    key={category}
-                                    onClick={() => setSelectedCategory(category)}
-                                    className={`px-4 py-2 rounded-lg font-medium transition ${selectedCategory === category
-                                        ? "bg-[#ff9d00] text-white"
-                                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                        }`}
-                                >
-                                    {category}
-                                </button>
-                            ))}
+                                <option value="all">All Categories</option>
+                                
+                                {categories.map((category) => (
+                                    <option key={category} value={category}>
+                                        {category}
+                                    </option>
+                                ))}
+                            </select>
 
                             {selectedCategory !== "all" && (
                                 <button
@@ -169,7 +157,7 @@ const AdminAllProducts = () => {
                         <p className="text-gray-500 text-lg">No products found</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
                         {filteredProducts.map((product) => (
                             <div
                                 key={product.id}
@@ -177,9 +165,9 @@ const AdminAllProducts = () => {
                             >
                                 {/* Product Image */}
                                 <div className="relative aspect-square bg-gray-100">
-                                    {product.images && product.images[0] ? (
+                                    {product.image ? (
                                         <img
-                                            src={product.images[0]}
+                                            src={product.image}
                                             alt={product.name}
                                             className="w-full h-full object-cover"
                                         />
@@ -191,7 +179,7 @@ const AdminAllProducts = () => {
 
                                     {/* Category Badge */}
                                     <div className="absolute top-2 left-2">
-                                        <span className="bg-[#8b1c62] text-white text-xs px-3 py-1 rounded-full">
+                                        <span className="bg-[#ff9d00] text-black text-xs px-3 py-1 rounded-full">
                                             {product.category}
                                         </span>
                                     </div>
@@ -208,8 +196,11 @@ const AdminAllProducts = () => {
                                     </p>
 
                                     <div className="flex items-center justify-between mb-3">
-                                        <p className="text-lg font-bold text-[#8b1c62]">
-                                            ₹{product.price}
+                                        <p className="text-sm  text-gray-800">
+                                            Sell price: ₹{product.salePrice}
+                                        </p>
+                                        <p className="text-sm  text-gray-600">
+                                            Original price: ₹{product.originalPrice}
                                         </p>
                                         <p className="text-sm text-gray-600">
                                             Stock: {product.stock || 0}
@@ -247,12 +238,12 @@ const AdminAllProducts = () => {
                 {/* Edit modal */}
                 {isEditOpen && currentProduct && (
                     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-                        <div className="bg-white w-full max-w-lg rounded-xl p-6 shadow-xl md:h-[80vh] overflow-y-auto">
+                        <div className="bg-white w-full max-w-lg rounded-xl p-6 shadow-xl md:h-[80vh] scrollbar-hide overflow-y-auto">
                             <h2 className="text-xl font-bold mb-4">Edit Product</h2>
                             <div>
-                                {currentProduct.images && currentProduct.images[0] && (
+                                {currentProduct.image && (
                                     <img
-                                        src={currentProduct.images[0]}
+                                        src={currentProduct.image}
                                         alt="Preview"
                                         className="mt-3 w-32 h-32 object-cover rounded-lg border"
                                     />
@@ -275,61 +266,106 @@ const AdminAllProducts = () => {
                                             });
                                         }
                                     }}
-                                    className="w-full border p-2 rounded"
+                                    className="w-full border p-2 rounded mb-3"
                                 />
                             </div>
 
                             <div className="space-y-4">
-                                <input
-                                    type="text"
-                                    value={currentProduct.name}
-                                    onChange={(e) =>
-                                        setCurrentProduct({
-                                            ...currentProduct,
-                                            name: e.target.value,
-                                        })
-                                    }
-                                    className="w-full border p-2 rounded"
-                                    placeholder="Product Name"
-                                />
 
-                                <input
-                                    type="number"
-                                    value={currentProduct.price}
-                                    onChange={(e) =>
-                                        setCurrentProduct({
-                                            ...currentProduct,
-                                            price: e.target.value,
-                                        })
-                                    }
-                                    className="w-full border p-2 rounded"
-                                    placeholder="Price"
-                                />
+                                {/* Name */}
+                                <div className="flex items-center gap-4">
+                                    <label className="w-32 text-sm font-medium">
+                                        Name:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={currentProduct.name}
+                                        onChange={(e) =>
+                                            setCurrentProduct({
+                                                ...currentProduct,
+                                                name: e.target.value,
+                                            })
+                                        }
+                                        className="flex-1 border p-2 rounded"
+                                        placeholder="Product Name"
+                                    />
+                                </div>
 
-                                <input
-                                    type="number"
-                                    value={currentProduct.stock}
-                                    onChange={(e) =>
-                                        setCurrentProduct({
-                                            ...currentProduct,
-                                            stock: e.target.value,
-                                        })
-                                    }
-                                    className="w-full border p-2 rounded"
-                                    placeholder="Stock"
-                                />
+                                {/* Original Price */}
+                                <div className="flex items-center gap-4">
+                                    <label className="w-32 text-sm font-medium">
+                                        Original Price:
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={currentProduct.originalPrice}
+                                        onChange={(e) =>
+                                            setCurrentProduct({
+                                                ...currentProduct,
+                                                originalPrice: e.target.value,
+                                            })
+                                        }
+                                        className="flex-1 border p-2 rounded"
+                                        placeholder="Original Price"
+                                    />
+                                </div>
 
-                                <textarea
-                                    value={currentProduct.description}
-                                    onChange={(e) =>
-                                        setCurrentProduct({
-                                            ...currentProduct,
-                                            description: e.target.value,
-                                        })
-                                    }
-                                    className="w-full border p-2 rounded"
-                                    placeholder="Description"
-                                />
+                                {/* Sale Price */}
+                                <div className="flex items-center gap-4">
+                                    <label className="w-32 text-sm font-medium">
+                                        Price:
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={currentProduct.salePrice}
+                                        onChange={(e) =>
+                                            setCurrentProduct({
+                                                ...currentProduct,
+                                                salePrice: e.target.value,
+                                            })
+                                        }
+                                        className="flex-1 border p-2 rounded"
+                                        placeholder="Price"
+                                    />
+                                </div>
+
+                                {/* Stock */}
+                                <div className="flex items-center gap-4">
+                                    <label className="w-32 text-sm font-medium">
+                                        Stock:
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={currentProduct.stock}
+                                        onChange={(e) =>
+                                            setCurrentProduct({
+                                                ...currentProduct,
+                                                stock: e.target.value,
+                                            })
+                                        }
+                                        className="flex-1 border p-2 rounded"
+                                        placeholder="Stock"
+                                    />
+                                </div>
+
+                                {/* Description */}
+                                <div className="flex items-start gap-4">
+                                    <label className="w-32 text-sm font-medium pt-2">
+                                        Description:
+                                    </label>
+                                    <textarea
+                                        value={currentProduct.description}
+                                        onChange={(e) =>
+                                            setCurrentProduct({
+                                                ...currentProduct,
+                                                description: e.target.value,
+                                            })
+                                        }
+                                        className="flex-1 border p-2 rounded"
+                                        placeholder="Description"
+                                    />
+                                </div>
+
                             </div>
 
                             <div className="flex justify-end gap-3 mt-6">

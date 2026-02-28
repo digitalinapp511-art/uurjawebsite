@@ -6,7 +6,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+// import Register from "./pages/Register";
 import Shop from "./pages/Shop";
 import ProductDetails from "./pages/ProductDetails";
 import Policies from "./pages/Policies";
@@ -19,6 +19,8 @@ import MyOrders from "./pages/MyOrders";
 import AdminProtectedRoute from "./admin/AdminProtectedRoute";
 import AdminLogin from "./admin/AdminLogin";
 import AdminDashboard from "./admin/AdminDashboard";
+import EditBanner from "./admin/AdminEditBanner";
+import AdminEditBanner from "./admin/AdminEditBanner";
 
 
 
@@ -46,12 +48,13 @@ function AppContent({ showSplash }) {
         <Route path="/policies" element={<Policies />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* <Route path="/register" element={<Register />} /> */}
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/edit-banner" element={<AdminEditBanner />} />
         <Route
           path="/admin/dashboard/:tab?"
           element={

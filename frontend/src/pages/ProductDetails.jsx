@@ -13,12 +13,12 @@ const ProductDetails = () => {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-8 mt-10 pb-4">
+      <div className="max-w-7xl mx-auto px-8  mt-10 pt-4 pb-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-start">
 
           {/* LEFT: IMAGE */}
           <div className="h-auto">
-            <ProductGallery key={product.id} images={product.images} />
+            <ProductGallery key={product.id} product={product} />
           </div>
 
           {/* RIGHT: PRODUCT INFO (SCROLLABLE) */}

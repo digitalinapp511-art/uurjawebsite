@@ -17,14 +17,17 @@ const MyOrders = () => {
 
         setOrders(updatedOrders);
         localStorage.setItem("orders", JSON.stringify(updatedOrders));
+        
     };
-
+    
 
     useEffect(() => {
         const orders =
             JSON.parse(localStorage.getItem("orders")) || [];
         setOrders(orders);
     }, []);
+
+    
 
     if (orders.length === 0) {
         return (
@@ -167,7 +170,7 @@ const MyOrders = () => {
                                     </div>
 
                                     <span className="text-sm font-medium">
-                                        ₹{item.price * item.quantity}
+                                        ₹{item.salePrice * item.quantity}
                                     </span>
                                 </div>
                             ))}

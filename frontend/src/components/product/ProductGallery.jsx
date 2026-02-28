@@ -1,27 +1,18 @@
 import { useState, forwardRef } from "react";
 
-const ProductGallery = forwardRef(({ images }, ref) => {
-  const [activeImage, setActiveImage] = useState(images[0]);
+const ProductGallery = forwardRef(({ product }, ref) => {
+  if (!product) return null;
+
+  const [activeImage, setActiveImage] = useState(product.image);
 
   return (
     <div ref={ref}>
       {/* MAIN IMAGE */}
-      <img src={activeImage} alt="Product"
+      <img
+        src={activeImage}
+        alt={product.name}
         className="w-full object-contain rounded-lg"
       />
-
-      {/* THUMBNAILS */}
-      <div className="flex gap-3 mt-4">
-        {images.map((img, idx) => (
-          <img
-            key={idx}
-            src={img}
-            onClick={() => setActiveImage(img)}
-            className={`w-20 h-20 object-cover rounded cursor-pointer
-              ${activeImage === img ? "ring-2 ring-black" : ""}`}
-          />
-        ))}
-      </div>
     </div>
   );
 });

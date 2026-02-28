@@ -221,12 +221,12 @@ const Login = () => {
             </button>
           </form>
 
-          <p className="text-center mt-4 text-sm">
+          {/* <p className="text-center mt-4 text-sm">
             Don't have an account?{" "}
             <Link to={`/register${location.search || ""}`} className="text-[#ff9d00] font-semibold underline hover:text-[#73154f]">
               Register
             </Link>
-          </p>
+          </p> */}
           
           {/* Recaptcha container */}
           <div id="recaptcha-container"></div>

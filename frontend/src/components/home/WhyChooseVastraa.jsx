@@ -1,7 +1,7 @@
-import { GiClothes } from "react-icons/gi";
+import {  GiCrystalShine } from "react-icons/gi";
 import { FaHandSparkles, FaUndo, FaLock } from "react-icons/fa";
 const iconMap = {
-    fabric: <GiClothes />,
+    stone: <GiCrystalShine />,
     craft: <FaHandSparkles />,
     return: <FaUndo />,
     secure: <FaLock />,
@@ -9,9 +9,9 @@ const iconMap = {
 
 const whyChooseData = [
     {
-        title: "Premium Fabric",
+        title: "Premium Stones",
         description: "Carefully sourced high-quality stones for lasting comfort and elegance.",
-        icon: "fabric",
+        icon: "stone",
     },
     {
         title: "Handcrafted Designs",

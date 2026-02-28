@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
     return (
-        <footer className=" text-white bg-[#383737]  pt-14 pb-8 border-t border-[#eeee]/10">
+        <footer className=" text-white bg-[#383737]  pt-14 pb-2 border-t border-[#eeee]/10">
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 sm:grid-col-2 md:grid-cols-4 gap-10 ">
 
                 {/* Brand */}
@@ -48,7 +48,7 @@ const Footer = () => {
 
             </div>
 
-            <div className="border-t border-white/10 mt-12 pt-6 text-center text-sm text-white/50">
+            <div className="border-t border-white/10 mt-12 pt-2 text-center text-sm text-white/50">
                 © {new Date().getFullYear()} uurja. All rights reserved.
             </div>
         </footer>
