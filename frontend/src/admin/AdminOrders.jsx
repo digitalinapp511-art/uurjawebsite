@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FiSearch } from "react-icons/fi"; // Install: npm install react-icons
+import { FiSearch } from "react-icons/fi"; 
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);

@@ -19,16 +19,11 @@ import MyOrders from "./pages/MyOrders";
 import AdminProtectedRoute from "./admin/AdminProtectedRoute";
 import AdminLogin from "./admin/AdminLogin";
 import AdminDashboard from "./admin/AdminDashboard";
-import EditBanner from "./admin/AdminEditBanner";
-import AdminEditBanner from "./admin/AdminEditBanner";
-
-
-
+// import AdminEditBanner from "./admin/AdminEditBanner";
 
 function AppContent({ showSplash }) {
   const location = useLocation();
 
-  // paths where navbar & footer should NOT appear
   const hideLayout =
     location.pathname === "/login" ||
     location.pathname === "/register" ||
@@ -54,7 +49,7 @@ function AppContent({ showSplash }) {
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/edit-banner" element={<AdminEditBanner />} />
+        {/* <Route path="/admin/edit-banner" element={<AdminEditBanner />} /> */}
         <Route
           path="/admin/dashboard/:tab?"
           element={
@@ -118,13 +113,11 @@ function AppWrapper({ showSplash }) {
       className={`transition-opacity ${!hidePadding ? "pt-16" : ""} ${showSplash ? "opacity-50" : "opacity-100"
         }`}
     >
-
       <CartProvider>
         <AppContent showSplash={showSplash} />
       </CartProvider>
     </div>
   );
 }
-
 
 export default App;

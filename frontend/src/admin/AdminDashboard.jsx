@@ -3,6 +3,7 @@ import AdminAddProduct from "./AdminAddProduct";
 import AdminOrders from "./AdminOrders";
 import AdminAllProducts from "./AdminAllProducts";
 import AdminEditBanner from "./AdminEditBanner";
+
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
@@ -176,7 +177,7 @@ const AdminDashboard = () => {
                         {activeTab === "orders" && <AdminOrders />}
                         {activeTab === "addProduct" && <AdminAddProduct />}
                         {activeTab === "allProduct" && <AdminAllProducts />}
-                        {activeTab === "editBanner" && <AdminEditBanner />}
+                        {activeTab === "banner" && <AdminEditBanner />}
                     </div>
                 </main>
 

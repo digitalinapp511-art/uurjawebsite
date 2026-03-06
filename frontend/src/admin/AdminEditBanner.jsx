@@ -4,24 +4,34 @@ const AdminEditBanner = () => {
     const [heroPreview, setHeroPreview] = useState(null);
     const [flashPreview, setFlashPreview] = useState(null);
 
+    const DEFAULT_HERO =
+        "https://res.cloudinary.com/dqkssrvir/image/upload/v1772029048/sliderImage_x7mdix.png";
+
+    const DEFAULT_FLASH =
+        "https://res.cloudinary.com/dqkssrvir/image/upload/v1772030852/flashSale1_p3auwa.png";
+
     useEffect(() => {
-        setHeroPreview(localStorage.getItem("heroBanner"));
-        setFlashPreview(localStorage.getItem("flashBanner"));
+        setHeroPreview(localStorage.getItem("heroBanner") || DEFAULT_HERO);
+        setFlashPreview(localStorage.getItem("flashBanner") || DEFAULT_FLASH);
     }, []);
 
     const handleImageChange = (e, type) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const previewUrl = URL.createObjectURL(file);
+        const reader = new FileReader();
 
-        if (type === "hero") {
-            setHeroPreview(previewUrl);
-            localStorage.setItem("heroBanner", previewUrl);
-        } else {
-            setFlashPreview(previewUrl);
-            localStorage.setItem("flashBanner", previewUrl);
-        }
+        reader.onloadend = () => {
+            if (type === "hero") {
+                setHeroPreview(reader.result);
+                localStorage.setItem("heroBanner", reader.result);
+            } else {
+                setFlashPreview(reader.result);
+                localStorage.setItem("flashBanner", reader.result);
+            }
+        };
+
+        reader.readAsDataURL(file);
     };
 
     return (
