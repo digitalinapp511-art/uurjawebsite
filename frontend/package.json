@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    
+    "postinstall": "chmod -R +x node_modules/.bin || true",
     "preview": "vite preview",
     "start": "node server.js"
   },
