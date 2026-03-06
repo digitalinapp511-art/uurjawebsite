@@ -4,12 +4,13 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAaqzFIueUFS5c85CMatbmgqYhCc6Gdwjw",
-    authDomain: "vastraa-ecommerce.firebaseapp.com",
-    projectId: "vastraa-ecommerce",
-    storageBucket: "vastraa-ecommerce.firebasestorage.app",
-    messagingSenderId: "125342859247",
-    appId: "1:125342859247:web:e3ab59a70b65cf70af001a"
+    apiKey: "AIzaSyAw_K8IYlOQrd889V1q5VWY8Is1s3o5HJI",
+    authDomain: "webbb-84a62.firebaseapp.com",
+    projectId: "webbb-84a62",
+    storageBucket: "webbb-84a62.firebasestorage.app",
+    messagingSenderId: "710766159044",
+    appId: "1:710766159044:web:2fadf0ddd2874a59d95591",
+    measurementId: "G-C5HEY4NQNK"
 };
 
 const app = initializeApp(firebaseConfig);
