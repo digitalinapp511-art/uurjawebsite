@@ -49,12 +49,12 @@ export const firebaseLogin = async (req, res) => {
     }
 
     // 🔥 Find or Create User
-    let user = await User.findOne({ mobileNo: cleanFrontendPhone });
+    let user = await User.findOne({ mobile: cleanFrontendPhone });
 
     if (!user) {
       console.log("Creating new user", cleanFrontendPhone, firebaseUid);
       user = await User.create({
-        mobileNo: cleanFrontendPhone,
+        mobile: cleanFrontendPhone,
         firebaseUid,
         isVerified: true,
       });
