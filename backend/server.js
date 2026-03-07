@@ -10,6 +10,7 @@ import otpRoutes from "./routes/otpRoutes.js";
 import orderRoutes from "./routes/order.routes.js";
 import bannerRoutes from "./routes/banner.routes.js";
 import adminRoutes from "./routes/admin.routes.js"; // Import admin routes
+import firebaseRoutes from "./routes/firebase.routes.js"; // Import Firebase routes
 
 dotenv.config();
 
@@ -50,8 +51,11 @@ app.use("/api/banners", bannerRoutes);
 // Admin Routes
 app.use("/api/admin", adminRoutes);
 
+// Firebase Routes
+app.use("/api/firebase", firebaseRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${`http://localhost:${PORT}`}`);
+  console.log(`Server running on port ${PORT}`);
 });
