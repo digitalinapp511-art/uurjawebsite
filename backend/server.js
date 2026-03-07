@@ -1,21 +1,28 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import connectDB from "./config/db.js"; // ⚠ must add .js extension
+import connectDB from "./config/db.js"; 
 
 import productRoutes from "./routes/product.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import bannerRoutes from "./routes/banner.routes.js";
-import adminRoutes from "./routes/admin.routes.js"; // Import admin routes
-import firebaseRoutes from "./routes/firebase.routes.js"; // Import Firebase routes
+import adminRoutes from "./routes/admin.routes.js"; 
+import firebaseRoutes from "./routes/firebase.routes.js"; 
 
 dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://uurja.in",
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 // Connect Database
