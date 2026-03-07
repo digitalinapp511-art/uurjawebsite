@@ -2,11 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js"; // ⚠ must add .js extension
-import authRoutes from "./routes/auth.routes.js";
 
 import productRoutes from "./routes/product.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
-import otpRoutes from "./routes/otpRoutes.js";
 import orderRoutes from "./routes/order.routes.js";
 import bannerRoutes from "./routes/banner.routes.js";
 import adminRoutes from "./routes/admin.routes.js"; // Import admin routes
@@ -30,11 +28,7 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// Auth Routes
-app.use("/api/auth", authRoutes);
 
-// OTP Routes
-app.use("/api/otp", otpRoutes);
 
 // Product Routes
 app.use("/api/products", productRoutes);

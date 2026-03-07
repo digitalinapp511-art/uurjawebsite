@@ -3,7 +3,7 @@ import { useState, forwardRef } from "react";
 const ProductGallery = forwardRef(({ product }, ref) => {
   if (!product) return null;
 
-  const [activeImage, setActiveImage] = useState(product.image);
+  const [activeImage, setActiveImage] = useState(product.images?.[0]);
 
   return (
     <div ref={ref}>

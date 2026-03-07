@@ -1,23 +1,22 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
 
-import { auth, db } from "../firebase/firebase";
 import { sendOTP, verifyOTP, setupRecaptcha } from "../firebase/authService";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import CloudinaryImage from "../components/CloudinaryImage";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     phone: "",
     otp: "",
   });
+
   const [error, setError] = useState("");
   const [messageType, setMessageType] = useState("error");
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState(null);
   const [showOTP, setShowOTP] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -26,14 +25,15 @@ const Login = () => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
+
     if (!otpSent) {
-      setFormData({ ...formData, phone: value });
+      setFormData((prev) => ({ ...prev, phone: value }));
     } else {
-      setFormData({ ...formData, otp: value });
+      setFormData((prev) => ({ ...prev, otp: value }));
     }
+
     setError("");
-    setMessageType("error");
   };
 
   const togglePasswordVisibility = () => {
@@ -45,16 +45,18 @@ const Login = () => {
     setLoading(true);
     setError("");
 
+    /* ======================
+       STEP 1: SEND OTP
+    ======================= */
     if (!otpSent) {
-      // Step 1: Send OTP
       if (!formData.phone) {
         setError("Phone number is required");
         setLoading(false);
         return;
       }
 
-      // Validate phone number format (10 digits)
       const phoneRegex = /^[0-9]{10}$/;
+
       if (!phoneRegex.test(formData.phone)) {
         setError("Please enter a valid 10-digit phone number");
         setLoading(false);
@@ -62,33 +64,24 @@ const Login = () => {
       }
 
       try {
-        // Check if user exists with this phone number
-        const q = query(
-          collection(db, "users"),
-          where("phone", "==", formData.phone)
-        );
-        const querySnapshot = await getDocs(q);
-
-        if (querySnapshot.empty) {
-          setError("User not found with this phone number");
-          setLoading(false);
-          return;
-        }
-
-        // Send OTP
         const result = await sendOTP(`+91${formData.phone}`);
+
         setConfirmationResult(result);
         setOtpSent(true);
-        setError("OTP sent to your phone number");
+        setError("OTP sent successfully");
         setMessageType("success");
       } catch (err) {
-        setError("Failed to send OTP. Please try again.");
         console.error("Send OTP error:", err);
+        setError("Failed to send OTP. Please try again.");
       } finally {
         setLoading(false);
       }
-    } else {
-      // Step 2: Verify OTP
+    }
+
+    /* ======================
+       STEP 2: VERIFY OTP
+    ======================= */
+    else {
       if (!formData.otp) {
         setError("OTP is required");
         setLoading(false);
@@ -102,37 +95,51 @@ const Login = () => {
       }
 
       try {
-        // Verify OTP
         const user = await verifyOTP(confirmationResult, formData.otp);
-
-        // Fetch user data from Firestore
-        const q = query(
-          collection(db, "users"),
-          where("phone", "==", formData.phone)
+        const token = await user.getIdToken();
+        const response = await fetch(
+          "http://localhost:5000/api/firebase/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              idToken: token,        // ✅ was: token
+              firebaseUid: user.uid, // ✅ was: uid
+              phone: user.phoneNumber, // ✅ already correct
+            }),
+          }
         );
-        const querySnapshot = await getDocs(q);
-        const userData = querySnapshot.docs[0].data();
 
-        // Store user data in localStorage
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Login failed");
+        }
+
+        /* STORE USER */
         localStorage.setItem(
           "user",
           JSON.stringify({
             uid: user.uid,
-            name: userData?.name || "",
-            phone: userData?.phone || formData.phone,
+            phone: user.phoneNumber,
+            token: token,
+            ...data.user,
           })
         );
 
         const params = new URLSearchParams(window.location.search);
         const next = params.get("next");
+
         if (next) {
           navigate(decodeURIComponent(next));
         } else {
           navigate("/");
         }
       } catch (err) {
-        setError("Invalid OTP. Please try again.");
         console.error("Verify OTP error:", err);
+        setError("Invalid OTP. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -157,11 +164,10 @@ const Login = () => {
 
           {/* Error Message */}
           {error && (
-            <div className={`mb-4 p-3 rounded-lg text-sm ${
-              messageType === 'success'
-                ? 'bg-green-100 border border-green-400 text-green-700'
-                : 'bg-red-100 border border-red-400 text-red-700'
-            }`}>
+            <div className={`mb-4 p-3 rounded-lg text-sm ${messageType === 'success'
+              ? 'bg-green-100 border border-green-400 text-green-700'
+              : 'bg-red-100 border border-red-400 text-red-700'
+              }`}>
               {error}
             </div>
           )}
@@ -227,7 +233,7 @@ const Login = () => {
               Register
             </Link>
           </p> */}
-          
+
           {/* Recaptcha container */}
           <div id="recaptcha-container"></div>
         </div>

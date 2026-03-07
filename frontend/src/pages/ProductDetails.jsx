@@ -1,15 +1,22 @@
 import ProductGallery from "../components/product/ProductGallery";
 import ProductInfo from "../components/product/ProductInfo";
-import { useParams } from "react-router-dom";
-import products from "../data/products";
 import ProductCard from "../components/ProductCard";
+import { useParams } from "react-router-dom";
+import { useGetProductsQuery, useGetProductByIdQuery } from "../redux/backendApi";
+// import ProductCard from "../components/ProductCard";
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const product = products.find((p) => p.id === Number(id));
-  if (!product) {
-    return <div className="text-center py-20">Product not found</div>;
-  }
+  const { data, isLoading, error } = useGetProductByIdQuery(id);
+  const { data: products = [] } = useGetProductsQuery();
+  const product = data;
+
+  console.log("Product Details API Response:", product);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading product</div>;
+  if (!product) return <div>Product not found</div>;
+
 
   return (
     <>
@@ -18,7 +25,7 @@ const ProductDetails = () => {
 
           {/* LEFT: IMAGE */}
           <div className="h-auto">
-            <ProductGallery key={product.id} product={product} />
+            <ProductGallery key={product._id} product={product} />
           </div>
 
           {/* RIGHT: PRODUCT INFO (SCROLLABLE) */}
@@ -34,12 +41,14 @@ const ProductDetails = () => {
         </h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 ">
-          {products
-            .filter((p) => p.id !== product.id)
-            .slice(0, 8)
-            .map((item) => (
-              <ProductCard key={item.id} product={item} />
-            ))}
+          {products?.length > 0 &&
+            products
+              .filter((p) => p._id !== product._id)
+              .slice(0, 8)
+              .map((item) => (
+                <ProductCard key={item._id} product={item} />
+              ))
+          }
         </div>
       </div>
     </>

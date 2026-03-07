@@ -14,18 +14,17 @@ export const logoutUser = async () => {
 export const setupRecaptcha = (containerId) => {
     if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new RecaptchaVerifier(
-            auth,                 // ✅ FIRST PARAM = auth
-            containerId,          // ✅ SECOND PARAM = container ID
+            auth,
+            containerId,
             {
                 size: "invisible",
-                callback: () => {
-                    console.log("Recaptcha verified");
-                },
+                callback: (response) => { },
                 "expired-callback": () => {
-                    console.log("Recaptcha expired");
+                    window.recaptchaVerifier = null; // reset on expiry
                 },
             }
         );
+        window.recaptchaVerifier.render(); // 👈 explicitly render it
     }
 };
 

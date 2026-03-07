@@ -4,11 +4,13 @@ import ShopHeader from "../components/shop/ShopHeader";
 // import FilterSidebar from "../components/shop/FilterSidebar";
 // import MobileFilter from "../components/shop/MobileFilter";
 import ProductGrid from "../components/shop/ProductGrid";
-import products from "../data/products";
+import { useGetProductsQuery } from "../redux/backendApi";
 
 const Shop = () => {
+  const { data: products = [], isLoading, error } = useGetProductsQuery();
   const [searchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
+
 
   // 🔹 FILTER STATE (safe default)
   const [filters, setFilters] = useState({
@@ -71,6 +73,9 @@ const Shop = () => {
       return 0;
     });
 
+  if (isLoading) return <div className="text-center py-20">Loading products...</div>;
+  if (error) return <div className="text-center py-20">Failed to load products</div>;
+
   return (
     <div className="bg-white">
       <ShopHeader />
@@ -102,7 +107,7 @@ const Shop = () => {
 
             {/* MOBILE */}
             <div className="flex items-center justify-between mb-4 md:hidden">
-              {/* <MobileFilter onFilterChange={handleFilterChange} /> */}              
+              {/* <MobileFilter onFilterChange={handleFilterChange} /> */}
               <select
                 className="border-2 px-2 py-2 text-sm"
                 value={sortBy}

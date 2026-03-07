@@ -93,7 +93,7 @@ const ProductInfo = ({ product }) => {
         <div>
             {/* TITLE */}
             <h1 className="font-heading text-3xl tracking-wide mb-3">
-                {product.name}
+                {product.productName}
             </h1>
 
             <p className="text-gray-600 tracking-wide mb-6">
@@ -104,8 +104,7 @@ const ProductInfo = ({ product }) => {
             <div className="mb-4" id="price-section">
                 <div className="flex items-center gap-4 mb-2">
                     <span className="text-2xl font-semibold text-[#ff9d00]">
-                        ₹ {product.salePrice.toLocaleString("en-IN")}
-                    </span>
+                        ₹ {(product?.salePrice || product?.price || 0).toLocaleString("en-IN")}                    </span>
 
                     {product.originalPrice && (
                         <>

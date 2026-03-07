@@ -5,7 +5,7 @@ const ProductCard = ({ product }) => {
     if (!product) return null;
 
     const image =
-        product.image || product.images?.[0] || "/placeholder.png";
+        product.images || product.images?.[0] || "/placeholder.png";
 
     const discount =
         product.originalPrice &&
@@ -16,14 +16,14 @@ const ProductCard = ({ product }) => {
         );
 
     return (
-        <Link to={`/product/${product.id}`} className="block">
+        <Link to={`/product/${product._id}`} className="block">
             <div className="bg-white rounded-xl md:shadow-md md:hover:shadow-xl transition overflow-hidden">
 
                 {/* IMAGE */}
                 <div className="relative overflow-hidden group mt-0 sm:mt-5">
                     <img
                         src={image}
-                        alt={product.name}
+                        alt={product.productName}
                         className="w-full h-64 sm:h-72 object-contain
                        group-hover:scale-105 transition duration-300"
                     />
@@ -32,7 +32,7 @@ const ProductCard = ({ product }) => {
                 {/* CONTENT */}
                 <div className="p-2 md:p-3 text-center">
                     <h3 className="font-heading text-lg md:mb-1">
-                        {product.name}
+                        {product.productName}
                     </h3>
 
                     {/* PRICE */}
