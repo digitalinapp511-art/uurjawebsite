@@ -1,10 +1,19 @@
 import ProductCard from "../ProductCard";
-import products from "../../data/products";
+// import products from "../../data/products";
+import { useGetProductsQuery } from "../../redux/backendApi";
 
 const FeaturedProducts = () => {
-  const featuredProducts = products.filter(
-    (product) => product.featured
-  );
+  const { data: products = [], isLoading, error } = useGetProductsQuery();
+  // const featuredProducts = products.filter((product) => product.featured);
+  // console.log("Data:",featuredProducts);
+
+  if (isLoading) {
+    return <p className="text-center py-10">Loading products...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center py-10 text-red-500">Failed to load products</p>;
+  }
 
   return (
     <section className="py-6 md:py-12 bg-[#faf5f7]">
@@ -20,7 +29,7 @@ const FeaturedProducts = () => {
 
         {/* Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {featuredProducts.map((product) => (
+          {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
