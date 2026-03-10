@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useCart } from "../../context/CartContext";
 import { useAddToCartMutation } from "../../redux/backendApi";
 import { useNavigate, useLocation } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import {
     FaTruck,
     FaGlobeAsia,
@@ -16,7 +17,7 @@ import { notyf } from "../../utils/notyf";
 const ProductInfo = ({ product }) => {
     // const { addToCart } = useCart();
     const [addToCartApi] = useAddToCartMutation();// ✅ IMPORTANT
-    console.log("Add to cart api check ",addToCartApi);
+    // console.log("Add to cart api check ",addToCartApi);
     // const [selectedSize, setSelectedSize] = useState(null);
     const [copied, setCopied] = useState(false);
     const navigate = useNavigate();
@@ -37,6 +38,15 @@ const ProductInfo = ({ product }) => {
 
     const handleAddToCart = async () => {
         const user = localStorage.getItem("token");
+        console.log("user", user);
+
+        if (user?.token) {
+            const decoded = jwtDecode(user.token); // convert string to object
+            const userId = decoded.id; // or decoded.userId depending on backend
+
+            console.log("User id:", userId);
+        }
+
 
         if (!user) {
             const next = encodeURIComponent(location.pathname + location.search);
@@ -53,7 +63,7 @@ const ProductInfo = ({ product }) => {
             // ✅ send to backend (size not used)
             await addToCartApi({
                 productId: product._id,
-                quantity: 1, 
+                quantity: 1,
             }).unwrap();
 
             notyf.success("Added to Cart");
