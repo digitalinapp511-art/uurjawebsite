@@ -1,6 +1,7 @@
 import { useState } from "react";
 // import SizeSelector from "./SizeSelector";
 import { useCart } from "../../context/CartContext";
+import { useAddToCartMutation } from "../../redux/backendApi";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
     FaTruck,
@@ -13,7 +14,9 @@ import {
 import { notyf } from "../../utils/notyf";
 
 const ProductInfo = ({ product }) => {
-    const { addToCart } = useCart(); // ✅ IMPORTANT
+    // const { addToCart } = useCart();
+    const [addToCartApi] = useAddToCartMutation();// ✅ IMPORTANT
+    console.log("Add to cart api check ",addToCartApi);
     // const [selectedSize, setSelectedSize] = useState(null);
     const [copied, setCopied] = useState(false);
     const navigate = useNavigate();
@@ -32,8 +35,9 @@ const ProductInfo = ({ product }) => {
     };
     const location = useLocation();
 
-    const handleAddToCart = () => {
-        const user = localStorage.getItem("user");
+    const handleAddToCart = async () => {
+        const user = localStorage.getItem("token");
+
         if (!user) {
             const next = encodeURIComponent(location.pathname + location.search);
             navigate(`/login?next=${next}`);
@@ -41,19 +45,24 @@ const ProductInfo = ({ product }) => {
         }
 
         const finalSize = product.sizes?.[0] || null;
-        addToCart(product, finalSize, 1);
 
-        const cartItem = {
-            id: product.id,
-            name: product.name,
-            salePrice: product.salePrice,
-            image: product.images?.[0],
-            size: finalSize,
-            quantity: 1,
-            availableSizes: product.sizes,
-        };
-        notyf.success("Added to Cart");
-        // NEXT STEP: send this to Cart Context / backend
+        // ✅ keep your existing cart logic
+        // addToCartApi(product, finalSize, 1);
+
+        try {
+            // ✅ send to backend (size not used)
+            await addToCartApi({
+                productId: product._id,
+                quantity: 1, 
+            }).unwrap();
+
+            notyf.success("Added to Cart");
+
+        } catch (error) {
+            console.error(error);
+            console.log("Product id", product._id);
+            notyf.error("Failed to add item");
+        }
     };
 
 

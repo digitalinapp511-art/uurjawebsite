@@ -25,7 +25,7 @@ const CartItem = ({ item }) => {
     const decreaseQty = () => {
         if (item.quantity > 1) {
             updateQuantity(item.productId, item.quantity - 1);
-            notyf.warning("Item quantity decreased");
+            notyf.error("Item quantity decreased");
         }
     };
 
@@ -38,7 +38,7 @@ const CartItem = ({ item }) => {
         <div className="flex gap-4 border rounded-xl p-2 bg-white">
             {/* IMAGE */}
             <img
-                src={item.image}
+                src={item.images}
                 alt={item.name}
                 className="w-24 h-28 object-cover rounded-lg"
             />

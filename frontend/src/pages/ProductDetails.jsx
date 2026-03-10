@@ -11,7 +11,6 @@ const ProductDetails = () => {
   const { data: products = [] } = useGetProductsQuery();
   const product = data;
 
-  console.log("Product Details API Response:", product);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading product</div>;

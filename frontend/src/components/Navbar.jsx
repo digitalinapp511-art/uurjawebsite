@@ -31,7 +31,7 @@ const Navbar = () => {
     localStorage.removeItem("token");
     setUser(null);
     setProfileOpen(false);
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -148,7 +148,7 @@ const Navbar = () => {
                 <Link to="/my-orders" onClick={() => setOpen(false)}>
                   My Orders
                 </Link>
-                <span className="font-semibold">{user.name}</span>
+                <span className="font-semibold">User: {user.phone}</span>
                 <button
                   onClick={() => {
                     handleLogout();

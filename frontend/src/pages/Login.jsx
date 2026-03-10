@@ -65,7 +65,6 @@ const Login = () => {
 
       try {
         const result = await sendOTP(`+91${formData.phone}`);
-
         setConfirmationResult(result);
         setOtpSent(true);
         setError("OTP sent successfully");
@@ -119,15 +118,19 @@ const Login = () => {
         }
 
         /* STORE USER */
+        /* STORE USER */
         localStorage.setItem(
           "user",
           JSON.stringify({
             uid: user.uid,
             phone: user.phoneNumber,
-            token: token,
-            ...data.user,
+            token: data.data.token, // backend JWT
+            ...data.data.user,
           })
         );
+
+        /* STORE TOKEN FOR API AUTH */
+        localStorage.setItem("token", data.data.token);
 
         const params = new URLSearchParams(window.location.search);
         const next = params.get("next");

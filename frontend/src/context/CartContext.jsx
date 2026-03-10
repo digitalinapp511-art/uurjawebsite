@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { notyf } from "../utils/notyf";
 
 const CartContext = createContext(null);
 export const CartProvider = ({ children }) => {
@@ -20,13 +21,13 @@ export const CartProvider = ({ children }) => {
         setCartItems((prev) => {
             const existingItem = prev.find(
                 (item) =>
-                    item.productId === product.id &&
+                    item.productId === product._id &&
                     item.size === finalSize
             );
 
             if (existingItem) {
                 return prev.map((item) =>
-                    item.productId === product.id &&
+                    item.productId === product._id &&
                         item.size === finalSize
                         ? { ...item, quantity: item.quantity + quantity }
                         : item
@@ -36,7 +37,7 @@ export const CartProvider = ({ children }) => {
             return [
                 ...prev,
                 {
-                    productId: product.id,
+                    productId: product._id,
                     name: product.name,
                     salePrice: product.salePrice,
                     originalPrice: product.originalPrice,
@@ -61,6 +62,10 @@ export const CartProvider = ({ children }) => {
     // ✅ UPDATE QUANTITY
     const updateQuantity = (productId, quantity) => {
         if (quantity < 1) return;
+        if (quantity > 5) {
+            notyf.error("You can only buy a maximum of 5 units of this product.");
+            return;
+        }
 
         setCartItems((prev) =>
             prev.map((item) =>
@@ -124,7 +129,7 @@ export const CartProvider = ({ children }) => {
                 removeFromCart,
                 updateQuantity,
                 updateSize,
-                cartCount, 
+                cartCount,
             }}
         >
             {children}
