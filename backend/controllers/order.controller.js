@@ -21,6 +21,7 @@ export const placeOrder = async (req, res) => {
       state,
       pincode,
       country,
+      paymentMethod,
     } = req.body;
 
     if (!fullName || !phone || !houseNo || !city || !state || !pincode) {
@@ -78,7 +79,9 @@ export const placeOrder = async (req, res) => {
         state,
         pincode,
         country: country || "India",
+
       },
+      paymentMethod: paymentMethod || "COD",
       totalAmount: cart.totalAmount,
     });
 
@@ -119,6 +122,7 @@ export const buyNowOrder = async (req, res) => {
       state,
       pincode,
       country,
+      paymentMethod,
     } = req.body;
 
     if (!productId || !quantity) {
@@ -170,6 +174,7 @@ export const buyNowOrder = async (req, res) => {
         pincode,
         country: country || "India",
       },
+      paymentMethod: paymentMethod || "COD",
       totalAmount: product.salePrice * quantity,
     });
 
@@ -288,7 +293,7 @@ export const adminUpdateOrderStatus = async (req, res, next) => {
       "Shipped",
       "Delivered",
       "Cancelled",
-      "Cancelled by User",   
+      "Cancelled by User",
       "Cancelled by Admin",
     ];
 
