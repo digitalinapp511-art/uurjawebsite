@@ -15,10 +15,7 @@ import {
 import { notyf } from "../../utils/notyf";
 
 const ProductInfo = ({ product }) => {
-    // const { addToCart } = useCart();
-    const [addToCartApi] = useAddToCartMutation();// ✅ IMPORTANT
-    // console.log("Add to cart api check ",addToCartApi);
-    // const [selectedSize, setSelectedSize] = useState(null);
+    const [addToCartApi] = useAddToCartMutation();
     const [copied, setCopied] = useState(false);
     const navigate = useNavigate();
 
@@ -41,8 +38,8 @@ const ProductInfo = ({ product }) => {
         console.log("user", user);
 
         if (user?.token) {
-            const decoded = jwtDecode(user.token); // convert string to object
-            const userId = decoded.id; // or decoded.userId depending on backend
+            const decoded = jwtDecode(user.token);
+            const userId = decoded.id;
 
             console.log("User id:", userId);
         }
@@ -77,31 +74,31 @@ const ProductInfo = ({ product }) => {
 
 
     const handleBuyNow = () => {
+
         const user = localStorage.getItem("user");
+        console.log("Product:", product);
+        console.log("Product ID:", product._id);
+
+        if (!product?._id) {
+            alert("Product not loaded yet. Please try again.");
+            return;
+        }
+
+
         if (!user) {
             const next = encodeURIComponent(location.pathname + location.search);
             navigate(`/login?next=${next}`);
             return;
         }
 
-        // if (!selectedSize) {
-        //     return;
-        // }
-
-        const buyNowItem = {
-            productId: product.id,
-            name: product.name,
-            salePrice: product.salePrice,
-            originalPrice: product.originalPrice,
-            image: product.image,
-            size: product.sizes?.[0] || null,
+        const item = {
+            productId: product._id,
             quantity: 1,
+            salePrice: product.salePrice,
+            name: product.productName,
         };
-
-        localStorage.setItem(
-            "buyNowItem",
-            JSON.stringify(buyNowItem)
-        );
+        console.log("Saving to localStorage:", item);
+        localStorage.setItem("buyNowItem", JSON.stringify(item));
 
         navigate("/checkout?type=buynow");
     };

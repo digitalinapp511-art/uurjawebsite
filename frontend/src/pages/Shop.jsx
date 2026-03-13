@@ -67,8 +67,8 @@ const Shop = () => {
 
     // 🔹 SORT LOGIC
     .sort((a, b) => {
-      if (sortBy === "low-high") return a.price - b.price;
-      if (sortBy === "high-low") return b.price - a.price;
+      if (sortBy === "low-high") return a.salePrice - b.salePrice;
+      if (sortBy === "high-low") return b.salePrice - a.salePrice;
       if (sortBy === "featured") return b.featured - a.featured;
       return 0;
     });

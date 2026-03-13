@@ -1,39 +1,71 @@
 import { useEffect, useState } from "react";
+import { useGetMyOrdersQuery, useCancelOrderMutation } from "../redux/backendApi";
 
 const MyOrders = () => {
+
     const [orders, setOrders] = useState([]);
-    const orderSteps = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED"];
+    const orderSteps = ["Pending", "Processing", "Shipped", "Delivered"];
+    const [cancelOrder] = useCancelOrderMutation();
+
+    const { data, isLoading, error } = useGetMyOrdersQuery();
 
     const getStepIndex = (status) => {
         return orderSteps.indexOf(status);
     };
 
-    const handleCancelOrder = (orderId) => {
-        const updatedOrders = orders.map(order =>
-            order.orderId === orderId
-                ? { ...order, status: "CANCELLED" }
-                : order
-        );
+    const handleCancelOrder = async (orderId) => {
+        if (!window.confirm("Are you sure you want to cancel this order?")) return;
 
-        setOrders(updatedOrders);
-        localStorage.setItem("orders", JSON.stringify(updatedOrders));
-        
+        try {
+            await cancelOrder(orderId).unwrap();
+            // ✅ Update local state too so UI reflects immediately
+            setOrders(prev =>
+                prev.map(order =>
+                    order._id === orderId
+                        ? { ...order, orderStatus: "Cancelled" }
+                        : order
+                )
+            );
+        } catch (err) {
+            console.error("Cancel failed:", err);
+            alert("Failed to cancel order");
+        }
     };
-    
 
     useEffect(() => {
-        const orders =
-            JSON.parse(localStorage.getItem("orders")) || [];
-        setOrders(orders);
-    }, []);
+        if (data) {
+            setOrders(data);
+        }
+    }, [data]);
+    console.log("Orders API:", data);
 
-    
+    if (isLoading) {
+        return <p className="text-center py-10">Loading orders...</p>;
+    }
+
+    if (error) {
+        return (
+            <p className="text-center py-10 text-red-500">
+                Failed to load orders
+            </p>
+        );
+    }
+
+    // if (orders.length === 0) {
+    //     return (
+    //         <div className="text-center py-10">
+    //             <h2 className="text-xl font-semibold">No orders found 📦</h2>
+    //         </div>
+    //     );
+    // }
+
+
 
     if (orders.length === 0) {
         return (
             <div className="pt-24 text-center mb-20">
                 <h2 className="text-xl font-semibold">
-                    No orders found
+                    No orders found 📦
                 </h2>
                 <p className="text-gray-500 mt-2">
                     You haven’t placed any orders yet
@@ -43,12 +75,11 @@ const MyOrders = () => {
     }
 
     const OrderTracker = ({ status }) => {
-        if (status === "CANCELLED") {
-            return (
-                <div className="mt-2 mb-16 text-red-600 font-bold text-center">
-                    ❌ Order Cancelled
-                </div>
-            );
+        if (status === "Cancelled by User") {
+            return <div className="mt-2 mb-10 text-red-600 font-bold text-xl text-center">❌ You cancelled this order</div>;
+        }
+        if (status === "Cancelled by Admin") {
+            return <div className="mt-2 mb-10 text-red-600 font-bold text-xl text-center">❌ Order cancelled by Seller</div>;
         }
 
         const activeIndex = getStepIndex(status);
@@ -103,19 +134,22 @@ const MyOrders = () => {
             <div className="space-y-6">
                 {orders.map((order) => (
                     <div
-                        key={order.orderId}
+                        key={order._id}
                         className="border rounded-lg p-6 shadow-sm"
                     >
-                        <div className="flex justify-center">
-                            <OrderTracker status={order.status} />
 
+                        {/* ORDER TRACKER */}
+                        <div className="flex justify-center mb-4">
+                            <OrderTracker status={order.orderStatus} />
                         </div>
+
                         {/* HEADER */}
                         <div className="flex justify-between mb-4 items-center">
                             <div>
                                 <p className="font-semibold">
-                                    Order #{order.orderId}
+                                    Order #{order._id}
                                 </p>
+
                                 <p className="text-sm text-gray-500">
                                     Placed on{" "}
                                     {new Date(order.createdAt).toLocaleDateString()}
@@ -123,55 +157,52 @@ const MyOrders = () => {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                {/* <span className={`px-3 py-2 text-sm rounded-full font-medium
-                                        ${order.status === "PLACED" && "bg-blue-100 text-blue-700"}
-                                        ${order.status === "CONFIRMED" && "bg-indigo-100 text-indigo-700"}
-                                        ${order.status === "SHIPPED" && "bg-yellow-100 text-yellow-700"}
-                                        ${order.status === "DELIVERED" && "bg-green-100 text-green-700"}
-                                        ${order.status === "CANCELLED" && "bg-red-100 text-red-700"}
-                                    `}
-                                >
-                                    {order.status}
-                                </span> */}
 
                                 {/* CANCEL BUTTON */}
-                                {order.status === "PLACED" && (
+                                {order.orderStatus === "Pending" && (
                                     <button
-                                        onClick={() => handleCancelOrder(order.orderId)}
-                                        className="text-sm text-red-600  px-3 py-2 bg-red-200 rounded-full hover:bg-red-300"
+                                        onClick={() => handleCancelOrder(order._id)}
+                                        className="text-sm text-red-600 px-3 py-2 bg-red-200 rounded-full hover:bg-red-300"
                                     >
                                         Cancel
                                     </button>
                                 )}
+
                             </div>
                         </div>
 
-
                         {/* ITEMS */}
                         <div className="space-y-3 border-t pt-4">
-                            {order.items.map((item, i) => (
+                            {order.items.map((item) => (
                                 <div
-                                    key={i}
+                                    key={`${order._id}-${item.product}`}
                                     className="flex justify-between items-center"
                                 >
+
                                     <div className="flex items-center gap-3">
+
                                         <img
-                                            src={item.image}
+                                            src={item.images}
+                                            alt={item.name}
                                             className="w-12 h-14 object-cover rounded"
                                         />
+
                                         <div>
                                             <p className="text-sm font-medium">
                                                 {item.name}
                                             </p>
+
                                             <p className="text-xs text-gray-500">
-                                                Size: {item.size} × {item.quantity}
+                                                Qty: {item.quantity}
                                             </p>
                                         </div>
+
                                     </div>
 
                                     <span className="text-sm font-medium">
-                                        ₹{item.salePrice * item.quantity}
+                                        ₹{item.price * item.quantity}
                                     </span>
+
                                 </div>
                             ))}
                         </div>
@@ -179,19 +210,25 @@ const MyOrders = () => {
                         {/* ADDRESS */}
                         <div className="mt-4 text-sm text-gray-700">
                             <p className="font-medium">Delivery Address</p>
+
                             <p>
-                                {order.shippingAddress.address1},{" "}
+                                {order.shippingAddress.houseNo},{" "}
                                 {order.shippingAddress.city},{" "}
                                 {order.shippingAddress.state} –{" "}
                                 {order.shippingAddress.pincode}
                             </p>
                         </div>
 
-                        {/* PAYMENT + TOTAL */}
+                        {/* TOTAL */}
+                        <div className="flex justify-between mt-2 text-md text-gray-800">
+                            <span>Payment Method</span>
+                            <span>{order.paymentMethod || "COD"}</span>
+                        </div>
                         <div className="flex justify-between mt-4 border-t pt-4 font-semibold">
-                            <span>Total Amount<br />{order.paymentMethod}</span>
+                            <span>Total Amount</span>
                             <span>₹{order.totalAmount}</span>
                         </div>
+
                     </div>
                 ))}
             </div>

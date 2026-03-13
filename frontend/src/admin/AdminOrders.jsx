@@ -1,42 +1,69 @@
 import { useEffect, useState } from "react";
-import { FiSearch } from "react-icons/fi"; 
+import { FiSearch } from "react-icons/fi";
+import { useGetAdminOrdersQuery, useUpdateOrderStatusMutation } from "../redux/backendApi";
+
 
 const AdminOrders = () => {
-  const [orders, setOrders] = useState([]);
+  // const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
-    // TEMP: Load orders from localStorage
-    const storedOrders =
-      JSON.parse(localStorage.getItem("orders")) || [];
-    setOrders(storedOrders);
-  }, []);
+  const { data, isLoading, error } = useGetAdminOrdersQuery();
+  const [updateOrderStatus] = useUpdateOrderStatusMutation();
 
-  const handleStatusChange = (orderId, newStatus) => {
-    const updatedOrders = orders.map((order) =>
-      order.orderId === orderId
-        ? { ...order, status: newStatus }
-        : order
-    );
+  const orders = data?.data || [];
+  console.log("admin orders:", orders);
 
-    setOrders(updatedOrders);
-    localStorage.setItem("orders", JSON.stringify(updatedOrders));
+  const adminToken = localStorage.getItem("adminToken");
+  console.log("adminToken at render:", adminToken); // ✅ check this
+
+  // const { data, isLoading, error } = useGetAdminOrdersQuery(undefined, {
+  //   skip: !adminToken, // ✅ only skip if truly no token
+  // });
+
+  console.log("RTK data:", data);
+  console.log("RTK error:", error);
+
+  // useEffect(() => {
+  //   // TEMP: Load orders from localStorage
+  //   const storedOrders =
+  //     JSON.parse(localStorage.getItem("orders")) || [];
+  //   setOrders(storedOrders);
+  // }, []);
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await updateOrderStatus({ id: orderId, status: newStatus }).unwrap();
+    } catch (err) {
+      console.error("Failed to update status:", err);
+      alert("Failed to update order status");
+    }
   };
+
+  if (isLoading) return <p className="text-center pt-20">Loading orders...</p>;
+  if (error) return <p className="text-center pt-20 text-red-500">Failed to load orders</p>;
+
+  if (orders.length === 0) {
+    return (
+      <div className="pt-24 text-center">
+        <h2 className="text-xl font-semibold">No orders available</h2>
+      </div>
+    );
+  }
 
   // Filter by status first
   const filteredByStatus =
     filter === "ALL"
       ? orders
-      : orders.filter((o) => o.status === filter);
+      : orders.filter((o) => o.orderStatus === filter);
 
   // Then filter by search query (order ID or customer name)
   const filteredOrders = filteredByStatus.filter((order) => {
     const query = searchQuery.toLowerCase();
-    const orderId = order.orderId.toLowerCase();
-    const customerName = order.customer?.name?.toLowerCase() || "";
+    const orderId = (order._id || "").toLowerCase();           // ✅ fallback to ""
+    const customerName = (order.shippingAddress?.fullName || "").toLowerCase();
 
     return orderId.includes(query) || customerName.includes(query);
   });
@@ -67,11 +94,11 @@ const AdminOrders = () => {
           text-sm focus:outline-none focus:ring-2 focus:ring-[#ff9d00]"
             >
               <option value="ALL">All Orders</option>
-              <option value="PLACED">Placed</option>
-              <option value="CONFIRMED">Confirmed</option>
-              <option value="SHIPPED">Shipped</option>
-              <option value="DELIVERED">Delivered</option>
-              <option value="CANCELLED">Cancelled</option>
+              <option value="Pending">Pending</option>
+              <option value="Processing">Processing</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
             </select>
 
             {/* Search Bar */}
@@ -122,15 +149,15 @@ const AdminOrders = () => {
                 {filteredOrders.length > 0 ? (
                   filteredOrders.map((order) => (
                     <tr
-                      key={order.orderId}
+                      key={order._id}
                       className="border-b hover:bg-gray-50"
                     >
                       <td className="px-4 py-3 font-medium">
-                        {order.orderId}
+                        {order._id}
                       </td>
 
                       <td className="px-4 py-3">
-                        {order.customer?.name}
+                        {order.shippingAddress?.fullName}
                       </td>
 
                       <td className="px-4 py-3">
@@ -148,25 +175,31 @@ const AdminOrders = () => {
                       </td>
 
                       <td className="px-4 py-3">
-                        <select
-                          value={order.status}
-                          onChange={(e) =>
-                            handleStatusChange(
-                              order.orderId,
-                              e.target.value
-                            )
-                          }
+                        {/* <select
+                          value={order.orderStatus}
+                          onChange={(e) => handleStatusChange(order._id, e.target.value)}
                           className="border rounded px-2 py-1 text-sm"
                         >
-                          <option value="PLACED">PLACED</option>
-                          <option value="CONFIRMED">CONFIRMED</option>
-                          <option value="SHIPPED">SHIPPED</option>
-                          <option value="DELIVERED">
-                            DELIVERED
-                          </option>
-                          <option value="CANCELLED">
-                            CANCELLED
-                          </option>
+                          <option value="Pending">Pending</option>
+                          <option value="Processing">Processing</option>
+                          <option value="Shipped">Shipped</option>      
+                          <option value="Delivered">Delivered</option>  
+                          <option value="Cancelled">Cancelled</option>
+                          <option value="Cancelled by Admin">Cancel Order</option>
+                        </select> */}
+
+                        <select
+                          value={order.orderStatus}
+                          onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                          disabled={order.orderStatus === "Cancelled by Customer" || order.orderStatus === "Cancelled by Seller"} // ✅ disable if cancelled
+                          className="border rounded px-2 py-1 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Processing">Processing</option>
+                          <option value="Shipped">Shipped</option>
+                          <option value="Delivered">Delivered</option>
+                          <option value="Cancelled by Seller">Cancel Order</option>  {/* ✅ admin cancel */}
+                          <option value="Cancelled by User" disabled>Cancelled by Customer</option> {/* ✅ shows when user cancelled */}
                         </select>
                       </td>
 
@@ -203,7 +236,7 @@ const AdminOrders = () => {
             {/* HEADER */}
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">
-                Order #{selectedOrder.orderId}
+                Order #{selectedOrder._id}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
@@ -215,8 +248,9 @@ const AdminOrders = () => {
 
             {/* CUSTOMER INFO */}
             <div className="mb-4 text-sm">
-              <p><b>Name:</b> {selectedOrder.customer.name}</p>
-              <p><b>Phone:</b> {selectedOrder.customer.phone}</p>
+              <p><b>Name:</b> {selectedOrder.shippingAddress?.fullName}</p>
+              <p><b>Phone:</b> {selectedOrder.shippingAddress?.phone}</p>
+
               <p><b>Placed On:</b> {new Date(selectedOrder.createdAt).toLocaleString()}</p>
             </div>
 
@@ -224,10 +258,11 @@ const AdminOrders = () => {
             <div className="mb-4 text-sm">
               <p className="font-semibold">Delivery Address</p>
               <p>
-                {selectedOrder.shippingAddress.address1},{" "}
-                {selectedOrder.shippingAddress.city},{" "}
-                {selectedOrder.shippingAddress.state} –{" "}
-                {selectedOrder.shippingAddress.pincode}
+                {selectedOrder.shippingAddress?.houseNo},
+                {selectedOrder.shippingAddress?.city},
+                {selectedOrder.shippingAddress?.state} –
+                {selectedOrder.shippingAddress?.pincode}
+
               </p>
             </div>
 
@@ -237,7 +272,7 @@ const AdminOrders = () => {
                 <div key={i} className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <img
-                      src={item.image}
+                      src={item.images}
                       className="w-12 h-14 rounded object-cover"
                     />
                     <div>
@@ -250,7 +285,7 @@ const AdminOrders = () => {
                     </div>
                   </div>
                   <p className="text-sm font-semibold">
-                    ₹{item.salePrice * item.quantity}
+                    ₹{item.price * item.quantity}
                   </p>
                 </div>
               ))}
@@ -262,11 +297,11 @@ const AdminOrders = () => {
                 <p><b>Payment:</b> {selectedOrder.paymentMethod}</p>
                 <p>
                   <b>Status:</b>{" "}
-                  <span className={`font-semibold ${selectedOrder.status === "CANCELLED"
+                  <span className={`font-semibold ${selectedOrder.orderStatus === "Cancelled", "Pending"
                     ? "text-red-600"
                     : "text-green-600"
                     }`}>
-                    {selectedOrder.status}
+                    {selectedOrder.orderStatus}
                   </span>
                 </p>
               </div>

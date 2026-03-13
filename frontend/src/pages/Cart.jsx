@@ -1,15 +1,26 @@
 import { useCart } from "../context/CartContext";
 import CartItem from "../components/CartItem";
 import { Link } from "react-router-dom";
+import { useGetCartQuery } from "../redux/backendApi";
 
 const Cart = () => {
-    const { cartItems } = useCart();
+    const { data,isLoading, error } = useGetCartQuery();
 
+    const cartItems = data?.items || [];
     // ✅ calculate total here
     const total = cartItems.reduce(
-        (sum, item) => sum + item.salePrice * item.quantity,
+        (sum, item) => sum + item.product.salePrice * item.quantity,
         0
     );
+    
+
+    if (isLoading) {
+        return <p className="text-center py-10">Loading products...</p>;
+    }
+
+    if (error) {
+        return <p className="text-center py-10 text-red-500">Failed to load products</p>;
+    }
 
     if (cartItems.length === 0) {
         return (
@@ -33,11 +44,8 @@ const Cart = () => {
             <div className="grid md:grid-cols-4 gap-8">
                 {/* LEFT: CART ITEMS */}
                 <div className="md:col-span-2 space-y-6">
-                    {cartItems.map((item) => (
-                        <CartItem
-                            key={`${item.productId}-${item.size}`}
-                            item={item}
-                        />
+                    {cartItems.map((item,index) => (
+                        <CartItem key={item.product?._id || index} item={item} />
                     ))}
                 </div>
 
@@ -49,14 +57,14 @@ const Cart = () => {
                     <div className="space-y-3 border-b pb-4 mb-4">
                         {cartItems.map((item, index) => (
                             <div
-                                key={`${item.productId}-${item.size}-${index}`}
+                                key={`${item.product._id}-${index}`}
                                 className="flex justify-between text-sm"
                             >
                                 <span className="max-w-[70%]">
-                                    {item.name} × {item.quantity}
+                                    {item.product.productName} × {item.quantity}
                                 </span>
                                 <span className="font-medium">
-                                    ₹{item.salePrice * item.quantity}
+                                    ₹{item.product.salePrice * item.quantity}
                                 </span>
                             </div>
                         ))}

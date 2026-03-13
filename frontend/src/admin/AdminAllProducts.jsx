@@ -1,85 +1,74 @@
 import { useState, useEffect } from "react";
 import { FiEdit2, FiTrash2, FiFilter, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import productsData from "../data/products";
+import { useGetProductsQuery, useDeleteProductMutation, useUpdateProductMutation } from "../redux/backendApi"; // ✅
 
 const AdminAllProducts = () => {
-    const [products, setProducts] = useState([]);
-    const [filteredProducts, setFilteredProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("all");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-    const [deleteLoading, setDeleteLoading] = useState(null);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [currentProduct, setCurrentProduct] = useState(null);
+    const [editImageFile, setEditImageFile] = useState(null);
     const navigate = useNavigate();
 
-    // Fetch all products
-    useEffect(() => {
-        fetchProducts();
-    }, []);
+    // ✅ RTK Query
+    const { data: products = [], isLoading, error } = useGetProductsQuery();
+    const [deleteProduct, { isLoading: deleteLoading }] = useDeleteProductMutation();
+    const [updateProduct] = useUpdateProductMutation();
 
-    // Filter products when category changes
-    useEffect(() => {
-        if (selectedCategory === "all") {
-            setFilteredProducts(products);
-        } else {
-            setFilteredProducts(
-                products.filter((product) => product.category === selectedCategory)
-            );
-        }
-    }, [selectedCategory, products]);
+    // ✅ Derive categories from products
+    const categories = [...new Set(products.map((p) => p.category))].filter(Boolean);
 
-    const fetchProducts = () => {
+    // ✅ Filter products by category
+    const filteredProducts = selectedCategory === "all"
+        ? products
+        : products.filter((p) => p.category === selectedCategory);
+
+    // ✅ Delete handler
+    const handleDelete = async (productId) => {
+        if (!window.confirm("Are you sure you want to delete this product?")) return;
+
         try {
-            setLoading(true);
-
-            setProducts(productsData);
-            setFilteredProducts(productsData);
-
-            const uniqueCategories = [
-                ...new Set(productsData.map((product) => product.category)),
-            ].filter(Boolean);
-
-            setCategories(uniqueCategories);
-            setLoading(false);
+            await deleteProduct(productId).unwrap();
         } catch (err) {
-            console.error("Error loading products:", err);
-            setError("Failed to load products");
-            setLoading(false);
+            console.error("Delete failed:", err);
+            alert("Failed to delete product");
         }
     };
 
-    const handleDelete = (productId) => {
-        if (!window.confirm("Are you sure you want to delete this product?")) {
-            return;
-        }
-
-        setProducts((prev) => prev.filter((p) => p.id !== productId));
-    };
-
+    // ✅ Edit handler
     const handleEdit = (productId) => {
-        const productToEdit = products.find((p) => p.id === productId);
+        const productToEdit = products.find((p) => p._id === productId);
         setCurrentProduct(productToEdit);
         setIsEditOpen(true);
     };
 
-    const handleUpdate = () => {
-        setProducts((prev) =>
-            prev.map((p) =>
-                p.id === currentProduct.id ? currentProduct : p
-            )
-        );
+    // ✅ Update handler
+    const handleUpdate = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("productName", currentProduct.productName);
+            formData.append("description", currentProduct.description);
+            formData.append("originalPrice", currentProduct.originalPrice);
+            formData.append("salePrice", currentProduct.salePrice);
+            formData.append("stock", currentProduct.stock);
+            formData.append("category", currentProduct.category);
 
-        setIsEditOpen(false);
+            if (editImageFile) {
+                formData.append("images", editImageFile);
+            }
+
+            await updateProduct({ id: currentProduct._id, formData }).unwrap();
+            setIsEditOpen(false);
+            setEditImageFile(null); 
+        } catch (err) {
+            console.error("Update failed:", err);
+            alert("Failed to update product");
+        }
     };
 
-    const clearFilter = () => {
-        setSelectedCategory("all");
-    };
+    const clearFilter = () => setSelectedCategory("all");
 
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center">
@@ -94,13 +83,7 @@ const AdminAllProducts = () => {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center text-red-600">
-                    <p className="text-xl">{error}</p>
-                    <button
-                        onClick={fetchProducts}
-                        className="mt-4 px-6 py-2 bg-[#8b1c62] text-white rounded-lg hover:bg-[#73154f]"
-                    >
-                        Retry
-                    </button>
+                    <p className="text-xl">Failed to load products</p>
                 </div>
             </div>
         );
@@ -131,7 +114,7 @@ const AdminAllProducts = () => {
                                 className="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#ff9d00]"
                             >
                                 <option value="all">All Categories</option>
-                                
+
                                 {categories.map((category) => (
                                     <option key={category} value={category}>
                                         {category}
@@ -160,15 +143,15 @@ const AdminAllProducts = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
                         {filteredProducts.map((product) => (
                             <div
-                                key={product.id}
+                                key={product._id}
                                 className="bg-white rounded-lg shadow-sm hover:shadow-md transition overflow-hidden"
                             >
                                 {/* Product Image */}
                                 <div className="relative aspect-square bg-gray-100">
-                                    {product.image ? (
+                                    {product.images ? (
                                         <img
-                                            src={product.image}
-                                            alt={product.name}
+                                            src={product.images[0]}
+                                            alt={product.productNameame}
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
@@ -188,7 +171,7 @@ const AdminAllProducts = () => {
                                 {/* Product Info */}
                                 <div className="p-4">
                                     <h3 className="font-semibold text-gray-900 mb-1 truncate">
-                                        {product.name}
+                                        {product.productName}
                                     </h3>
 
                                     <p className="text-sm text-gray-500 mb-2 line-clamp-2">
@@ -210,17 +193,17 @@ const AdminAllProducts = () => {
                                     {/* Action Buttons */}
                                     <div className="flex gap-2">
                                         <button
-                                            onClick={() => handleEdit(product.id)}
+                                            onClick={() => handleEdit(product._id)}
                                             className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                                         >
                                             <FiEdit2 /> Edit
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(product.id)}
-                                            disabled={deleteLoading === product.id}
+                                            onClick={() => handleDelete(product._id)}
+                                            disabled={deleteLoading === product._id}
                                             className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                            {deleteLoading === product.id ? (
+                                            {deleteLoading === product._id ? (
                                                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                                             ) : (
                                                 <>
@@ -238,12 +221,12 @@ const AdminAllProducts = () => {
                 {/* Edit modal */}
                 {isEditOpen && currentProduct && (
                     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-                        <div className="bg-white w-full max-w-lg rounded-xl p-6 shadow-xl md:h-[80vh] scrollbar-hide overflow-y-auto">
+                        <div className="bg-white w-full max-w-lg rounded-xl p-6 shadow-xl h-[90vh] scrollbar-hide overflow-y-auto">
                             <h2 className="text-xl font-bold mb-4">Edit Product</h2>
                             <div>
-                                {currentProduct.image && (
+                                {currentProduct.images && (
                                     <img
-                                        src={currentProduct.image}
+                                        src={currentProduct.images[0]}
                                         alt="Preview"
                                         className="mt-3 w-32 h-32 object-cover rounded-lg border"
                                     />
@@ -258,12 +241,9 @@ const AdminAllProducts = () => {
                                     onChange={(e) => {
                                         const file = e.target.files[0];
                                         if (file) {
+                                            setEditImageFile(file); // ✅ store actual file
                                             const previewUrl = URL.createObjectURL(file);
-
-                                            setCurrentProduct({
-                                                ...currentProduct,
-                                                images: [previewUrl], // replacing first image
-                                            });
+                                            setCurrentProduct({ ...currentProduct, images: [previewUrl] }); // just for preview
                                         }
                                     }}
                                     className="w-full border p-2 rounded mb-3"
@@ -279,11 +259,11 @@ const AdminAllProducts = () => {
                                     </label>
                                     <input
                                         type="text"
-                                        value={currentProduct.name}
+                                        value={currentProduct.productName}
                                         onChange={(e) =>
                                             setCurrentProduct({
                                                 ...currentProduct,
-                                                name: e.target.value,
+                                                productName: e.target.value,
                                             })
                                         }
                                         className="flex-1 border p-2 rounded"

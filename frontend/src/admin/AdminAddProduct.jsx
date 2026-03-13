@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { notyf } from "../utils/notyf";
+import { useAddProductMutation } from "../redux/backendApi";
 
 const AdminAddProduct = () => {
     const [product, setProduct] = useState({
-        name: "",
+        productName: "",   // ❌ was "name"
         description: "",
-        sizes: "",
-        price: "",
+        originalPrice: "", // ❌ was "price"
         salePrice: "",
-        color: "",
+        stock: "",         // ❌ was missing
         category: "",
         images: [],
     });
 
     const [imagePreviews, setImagePreviews] = useState([]);
+    const [addProduct, { isLoading }] = useAddProductMutation();
 
     const handleChange = (e) => {
         setProduct({ ...product, [e.target.name]: e.target.value });
@@ -30,55 +31,51 @@ const AdminAddProduct = () => {
         setImagePreviews(previews);
     };
 
-    const handleAddProduct = () => {
+    const handleAddProduct = async () => {
         if (
-            !product.name ||
+            !product.productName ||
             !product.originalPrice ||
             !product.salePrice ||
             !product.category ||
-            !product.description||
+            !product.description ||
             !product.stock ||
-            !product.images
+            product.images.length === 0
         ) {
-            notyf.error("Please fill all fields")
-            // alert("Please fill all required fields");
+            notyf.error("Please fill all fields");
             return;
         }
 
-        const products =
-            JSON.parse(localStorage.getItem("products")) || [];
+        try {
+            const formData = new FormData();
+            formData.append("productName", product.productName);   // ✅ match backend
+            formData.append("description", product.description);
+            formData.append("originalPrice", product.originalPrice);
+            formData.append("salePrice", product.salePrice);
+            formData.append("stock", product.stock);
+            formData.append("category", product.category);
 
-        const newProduct = {
-            id: Date.now(),
-            name: product.name,
-            description: product.description,
-            originalPrice: product.originalPrice,
-            salePrice: product.salePrice,
-            stock: product.stock,
-            category: product.category,
-            images: imagePreviews, // TEMP (later backend URLs)
-            status: "ACTIVE",
-            createdAt: new Date().toISOString(),
-        };
+            // ✅ Append each image file
+            product.images.forEach((img) => formData.append("images", img));
 
-        localStorage.setItem(
-            "products",
-            JSON.stringify([...products, newProduct])
-        );
+            await addProduct(formData).unwrap();
+            notyf.success("Product Added Successfully!");
 
-        alert("✅ Product Added Successfully");
+            // ✅ Reset form
+            setProduct({
+                productName: "",
+                description: "",
+                originalPrice: "",
+                salePrice: "",
+                stock: "",
+                category: "",
+                images: [],
+            });
+            setImagePreviews([]);
 
-        // reset
-        setProduct({
-            name: "",
-            description: "",
-            originalPrice: "",
-            salePrice: "",
-            stock: "",
-            category: "",
-            images: [],
-        });
-        setImagePreviews([]);
+        } catch (err) {
+            console.error("Failed:", err);
+            notyf.error(err?.data?.message || "Failed to add product");
+        }
     };
 
     return (
@@ -93,7 +90,7 @@ const AdminAddProduct = () => {
                             Product Name *
                         </label>
                         <input
-                            name="name"
+                            name="productName"
                             value={product.name}
                             onChange={handleChange}
                             className="w-full mt-1 p-3 border rounded-lg"

@@ -1,62 +1,173 @@
+// import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { FaEye, FaEyeSlash } from "react-icons/fa";
+
+// const ADMIN_KEY = "123456"; // 🔐 Change this to your secret key
+
+// const AdminLogin = () => {
+//     const [password, setPassword] = useState("");
+//     const [error, setError] = useState("");
+//     const [showPassword, setShowPassword] = useState(false);
+//     const navigate = useNavigate();
+
+//     const handleLogin = (e) => {
+//         e.preventDefault();
+
+//         if (password === ADMIN_KEY) {
+//             localStorage.setItem("adminAuth", "true");
+//             localStorage.setItem("adminLoginTime", Date.now()); 
+//             navigate("/admin/dashboard");
+//         } else {
+//             setError("Invalid Admin Key");
+//         }
+//     };
+
+//     return (
+//         <div className="min-h-screen flex items-center justify-center bg-gray-100">
+//             <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+//                 <h2 className="text-2xl font-bold text-center mb-6">
+//                     Admin Login
+//                 </h2>
+
+//                 <form onSubmit={handleLogin} className="space-y-4">
+//                     <div className="relative">
+//                         <input
+//                             type={showPassword ? "text" : "password"}
+//                             placeholder="Enter Admin Key"
+//                             value={password}
+//                             onChange={(e) => setPassword(e.target.value)}
+//                             className="w-full border p-3 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff9d00]"
+//                         />
+
+//                         <button
+//                             type="button"
+//                             onClick={() => setShowPassword(!showPassword)}
+//                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+//                         >
+//                             {showPassword ? <FaEyeSlash /> : <FaEye />}
+//                         </button>
+//                     </div>
+
+//                     {error && (
+//                         <p className="text-red-500 text-sm">{error}</p>
+//                     )}
+
+//                     <button
+//                         type="submit"
+//                         className="w-full bg-[#ff9d00] text-white py-3 rounded-lg hover:opacity-90 transition"
+//                     >
+//                         Login
+//                     </button>
+//                 </form>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default AdminLogin;
+
+
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
-const ADMIN_KEY = "123456"; // 🔐 Change this to your secret key
+import { useAdminLoginMutation } from "../redux/backendApi"; // ✅ import
 
 const AdminLogin = () => {
-    const [password, setPassword] = useState("");
+    const [mobile, setMobile] = useState("");
+    const [pin, setPin] = useState("");
     const [error, setError] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPin, setShowPin] = useState(false);
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
-        e.preventDefault();
+    const [adminLogin, { isLoading }] = useAdminLoginMutation(); // ✅
 
-        if (password === ADMIN_KEY) {
+    // const handleLogin = async (e) => {
+    //     e.preventDefault();
+    //     setError("");
+
+    //     try {
+    //         const res = await adminLogin({ mobile, pin }).unwrap();
+
+    //         localStorage.setItem("adminToken", res.token); // ✅ save JWT token
+    //         localStorage.setItem("adminAuth", "true");
+    //         navigate("/admin/dashboard");
+
+    //     } catch (err) {
+    //         setError(err?.data?.message || "Invalid credentials");
+    //     }
+    // };
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setError("");
+
+        console.log("1. Button clicked");
+        console.log("2. mobile:", mobile, "pin:", pin);
+
+        try {
+            const res = await adminLogin({ mobile, pin }).unwrap();
+            console.log("3. API response:", res);
+
             localStorage.setItem("adminAuth", "true");
-            localStorage.setItem("adminLoginTime", Date.now()); 
+            localStorage.setItem("adminToken", res.token);
+            localStorage.setItem("adminLoginTime", Date.now());
+
+            console.log("4. localStorage set:");
+            console.log("   adminAuth:", localStorage.getItem("adminAuth"));
+            console.log("   adminToken:", localStorage.getItem("adminToken"));
+            console.log("   adminLoginTime:", localStorage.getItem("adminLoginTime"));
+
+            console.log("5. Navigating...");
             navigate("/admin/dashboard");
-        } else {
-            setError("Invalid Admin Key");
+            console.log("6. Navigate called");
+
+        } catch (err) {
+            console.error("ERROR:", err);
+            setError(err?.data?.message || "Invalid credentials");
         }
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-                <h2 className="text-2xl font-bold text-center mb-6">
-                    Admin Login
-                </h2>
+                <h2 className="text-2xl font-bold text-center mb-6">Admin Login</h2>
 
                 <form onSubmit={handleLogin} className="space-y-4">
+                    {/* MOBILE */}
+                    <input
+                        type="text"
+                        placeholder="Mobile Number"
+                        value={mobile}
+                        onChange={(e) => setMobile(e.target.value)}
+                        className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff9d00]"
+                    />
+
+                    {/* PIN */}
                     <div className="relative">
                         <input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter Admin Key"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            type={showPin ? "text" : "password"}
+                            placeholder="Enter PIN"
+                            value={pin}
+                            onChange={(e) => setPin(e.target.value)}
                             className="w-full border p-3 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff9d00]"
                         />
-
                         <button
                             type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            onClick={() => setShowPin(!showPin)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
                         >
-                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            {showPin ? <FaEyeSlash /> : <FaEye />}
                         </button>
                     </div>
 
-                    {error && (
-                        <p className="text-red-500 text-sm">{error}</p>
-                    )}
+                    {error && <p className="text-red-500 text-sm">{error}</p>}
 
                     <button
                         type="submit"
-                        className="w-full bg-[#ff9d00] text-white py-3 rounded-lg hover:opacity-90 transition"
+                        disabled={isLoading}
+                        className="w-full bg-[#ff9d00] text-white py-3 rounded-lg hover:opacity-90"
                     >
-                        Login
+                        {isLoading ? "Logging in..." : "Login"}
                     </button>
                 </form>
             </div>

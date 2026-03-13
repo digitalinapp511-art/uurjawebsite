@@ -2,15 +2,19 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FiMenu, FiX, FiShoppingCart, FiUser } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
+import {useGetCartQuery} from "../redux/backendApi";
 import logo from "../assets/logo/logo.jpeg";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const { data,isLoading, error } = useGetCartQuery();
+  
+      const cartItems = data?.items || [];
 
   const navigate = useNavigate();
-  const { cartItems } = useCart();
+  // const { cartItems } = useCart();
 
   const cartCount = cartItems.reduce(
     (total, item) => total + item.quantity,

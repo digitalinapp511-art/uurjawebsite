@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
-
+import { Link } from "react-router-dom";
 import { sendOTP, verifyOTP, setupRecaptcha } from "../firebase/authService";
 
 const Login = () => {
@@ -118,18 +118,16 @@ const Login = () => {
         }
 
         /* STORE USER */
-        /* STORE USER */
         localStorage.setItem(
           "user",
           JSON.stringify({
             uid: user.uid,
             phone: user.phoneNumber,
-            token: data.data.token, // backend JWT
             ...data.data.user,
           })
         );
 
-        /* STORE TOKEN FOR API AUTH */
+        // /* STORE TOKEN FOR API AUTH */
         localStorage.setItem("token", data.data.token);
 
         const params = new URLSearchParams(window.location.search);
@@ -146,9 +144,6 @@ const Login = () => {
       } finally {
         setLoading(false);
       }
-
-
-
     }
   };
 
@@ -231,6 +226,10 @@ const Login = () => {
                 <FiArrowRight className="text-lg transition-transform duration-300 group-hover:translate-x-1" />
               )}
             </button>
+            <div className="border-2 bg-gray-300 rounded-lg py-1 text-center">
+              <Link to="/admin/login" className=" text-gray-400 hover:text-red-500 transition">Login As Admin</Link>
+            </div>
+
           </form>
 
           {/* <p className="text-center mt-4 text-sm">

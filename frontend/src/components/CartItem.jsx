@@ -1,45 +1,85 @@
-import { useCart } from "../context/CartContext";
 import { FaTrash } from "react-icons/fa";
 import { notyf } from "../utils/notyf";
+import {
+    useAddToCartMutation,
+    useRemoveCartMutation,
+    useUpdateCartMutation
+} from "../redux/backendApi";
 
 const CartItem = ({ item }) => {
-    const { updateQuantity, removeFromCart} = useCart();
-    console.log("Cart Item =>", JSON.stringify(item));
+    // console.log("Cart Item =>", JSON.stringify(item));
+    // console.log("quantity:", item.quantity);
+    console.log("productId:", item.product._id)
+
+
+    const [updateCartApi] = useUpdateCartMutation();
+    const [removeCartApi] = useRemoveCartMutation();
+
+    const quantity = item.quantity || 1;
+    const salePrice = item.product.salePrice || 0;
+    const originalPrice = item.product.originalPrice || 0;
 
     const discount =
-        item.originalPrice &&
-        Math.round(
-            ((item.originalPrice - item.salePrice) / item.originalPrice) * 100
-        );
+        originalPrice &&
+        Math.round(((originalPrice - salePrice) / originalPrice) * 100);
 
     const savedAmount =
-        item.originalPrice
-            ? (item.originalPrice - item.salePrice) * item.quantity
+        originalPrice
+            ? (originalPrice - salePrice) * quantity
             : 0;
 
-    const increaseQty = () => {
-        updateQuantity(item.productId, item.quantity + 1);
-        notyf.success("Item quantity increased");
-    };
+    const increaseQty = async () => {
+        try {
+            if (quantity >= item.product.stock) {
+                notyf.error(`You can only add ${item.product.stock} items`);
+                return;
+            }
+            await updateCartApi({
+                productId: item.product._id,
+                quantity: quantity + 1
+            }).unwrap();
 
-    const decreaseQty = () => {
-        if (item.quantity > 1) {
-            updateQuantity(item.productId, item.quantity - 1);
-            notyf.error("Item quantity decreased");
+
+            notyf.success("Item quantity increased");
+        } catch (error) {
+            console.error(error);
+            notyf.error("Failed to increase quantity");
         }
     };
 
-    const removeItem = () => {
-        removeFromCart(item.productId, item.size);
-        notyf.error("Item removed from cart");
+    const decreaseQty = async () => {
+        if (quantity > 1) {
+            try {
+                await updateCartApi({
+                    productId: item.product._id,
+                    quantity: quantity - 1
+                }).unwrap();
+
+                notyf.error("Item quantity decreased");
+            } catch (error) {
+                console.error(error);
+                notyf.error("Failed to decrease quantity");
+            }
+        }
+    };
+
+    const removeItem = async () => {
+        try {
+            await removeCartApi(item.product._id).unwrap();
+            console.log("Product Id:", item.product._id);
+            notyf.error("Item removed from cart");
+
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
         <div className="flex gap-4 border rounded-xl p-2 bg-white">
             {/* IMAGE */}
             <img
-                src={item.images}
-                alt={item.name}
+                src={item.product.images?.[0]}
+                alt={item.product.productName}
                 className="w-24 h-28 object-cover rounded-lg"
             />
 
@@ -47,7 +87,7 @@ const CartItem = ({ item }) => {
             <div className="flex flex-row justify-between w-full">
                 <div className="flex flex-col space-y-2">
                     <h3 className="font-semibold text-gray-900">
-                        {item.name}
+                        {item.product.productName}
                     </h3>
 
                     {/* Size */}
@@ -93,17 +133,17 @@ const CartItem = ({ item }) => {
 
                     <div className="flex items-center justify-end gap-2">
                         <span className="font-bold text-lg">
-                            ₹{item.salePrice * item.quantity}
+                            ₹{item.product.salePrice * item.quantity}
                         </span>
 
-                        {item.originalPrice && (
+                        {item.product.originalPrice && (
                             <span className="line-through text-gray-400 text-sm">
-                                ₹{item.originalPrice * item.quantity}
+                                ₹{item.product.originalPrice * item.quantity}
                             </span>
                         )}
                     </div>
 
-                    {item.originalPrice && (
+                    {item.product.originalPrice && (
                         <div className="text-sm text-green-600">
                             <p>Saved ₹{savedAmount}</p>
                             <p>{discount}% OFF</p>
