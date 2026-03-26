@@ -97,7 +97,7 @@ const Login = () => {
         const user = await verifyOTP(confirmationResult, formData.otp);
         const token = await user.getIdToken();
         const response = await fetch(
-          "http://localhost:5000/api/firebase/login",
+          "https://backend.uurja.in/api/firebase/login",
           {
             method: "POST",
             headers: {
