@@ -104,8 +104,8 @@ const Login = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              idToken: token,        // ✅ was: token
-              firebaseUid: user.uid, // ✅ was: uid
+              // idToken: token,        // ✅ was: token
+              // firebaseUid: user.uid, // ✅ was: uid
               phone: user.phoneNumber, // ✅ already correct
             }),
           }

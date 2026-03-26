@@ -33,7 +33,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+    import.meta.env.VITE_API_BASE_URL || "https://backend.uurja.in";
+    // "https://backend.uurja.in";
+
+    console.log("API Base URL:", API_BASE_URL); // ✅ Log the base URL to verify it's correct   
 
 export const backendApi = createApi({
     reducerPath: "backendApi",

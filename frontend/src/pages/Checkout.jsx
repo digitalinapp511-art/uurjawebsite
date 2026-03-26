@@ -362,7 +362,7 @@ const Checkout = () => {
                                     type="radio"
                                     name="paymentMethod"
                                     value="NET_BANKING"
-                                    checked={form.paymentMethod === "MET_BANKING"}
+                                    checked={form.paymentMethod === "NET_BANKING"}
                                     onChange={handleChange}
                                     className="w-5 h-5 cursor-pointer"
                                 />
